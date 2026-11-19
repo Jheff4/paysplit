@@ -66,3 +66,14 @@
     transform: translateX(300%);
   }
 }
+
+@media print {
+  body.printing-receipt #root {
+    display: none;
+  }
+  header.sticky,
+  nav[aria-label='Main'],
+  [href='#main'] {
+    display: none !important;
+  }
+}

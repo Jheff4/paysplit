@@ -29,6 +29,8 @@ test('an expired session anywhere returns the user to sign in and wipes cached d
   tokenStore.set('token', false)
   server.use(
     http.get(apiUrl('/notifications'), () => HttpResponse.json({ ...emptyPage, unreadCount: 0 })),
+    http.get(apiUrl('/transactions'), () => HttpResponse.json(emptyPage)),
+    http.get(apiUrl('/dashboard/summary'), () => HttpResponse.json(summary())),
     http.get(apiUrl('/auth/me'), () => HttpResponse.json({ statusCode: 401 }, { status: 401 })),
   )
   queryClient.setQueryData(['private'], { balance: 1 })

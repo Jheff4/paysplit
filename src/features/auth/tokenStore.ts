@@ -54,6 +54,14 @@ export const tokenStore = {
 
   lastSignOutReason: (): SignOutReason | null => lastReason,
 
+  isRemembered(): boolean {
+    try {
+      return localStorage.getItem(KEY) !== null
+    } catch {
+      return false
+    }
+  },
+
   subscribe(listener: Listener) {
     listeners.add(listener)
     return () => listeners.delete(listener)

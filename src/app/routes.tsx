@@ -1,5 +1,5 @@
 import type { RouteObject } from 'react-router'
-import { NotFoundPage, RouteErrorPage, StubPage } from '@/pages/system'
+import { NotFoundPage, RouteErrorPage } from '@/pages/system'
 import { AppShell } from './AppShell'
 import { PublicOnly, RequireAuth } from './guards'
 import { PublicLayout } from './PublicLayout'
@@ -77,13 +77,22 @@ export const routes: RouteObject[] = [
             path: 'split-runs/:runId',
             lazy: () => import('@/pages/rules/SplitRunPage').then((m) => ({ Component: m.SplitRunPage })),
           },
-          { path: 'transactions', element: <StubPage title="Transactions" /> },
-          { path: 'transactions/:transactionId', element: <StubPage title="Transaction" /> },
+          {
+            path: 'transactions',
+            lazy: () => import('@/pages/transactions/TransactionsPage').then((m) => ({ Component: m.TransactionsPage })),
+          },
+          {
+            path: 'transactions/:transactionId',
+            lazy: () => import('@/pages/transactions/TransactionsPage').then((m) => ({ Component: m.TransactionsPage })),
+          },
           {
             path: 'notifications',
             lazy: () => import('@/pages/notifications/NotificationsPage').then((m) => ({ Component: m.NotificationsPage })),
           },
-          { path: 'settings', element: <StubPage title="Settings" /> },
+          {
+            path: 'settings',
+            lazy: () => import('@/pages/settings/SettingsPage').then((m) => ({ Component: m.SettingsPage })),
+          },
         ],
       },
       { path: '*', element: <NotFoundPage /> },

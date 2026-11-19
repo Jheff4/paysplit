@@ -3,15 +3,11 @@ import { Alert } from '@/components/ui/Alert'
 import { Button } from '@/components/ui/Button'
 import { PageHeader } from '@/components/ui/PageHeader'
 
-export function StubPage({ title }: { title: string }) {
-  return <PageHeader title={title} description="This screen is being built." />
-}
-
 export function NotFoundPage() {
   return (
     <div className="mx-auto max-w-md p-6">
       <PageHeader title="Page not found" description="The page you are looking for does not exist or has moved." />
-      <Link to="/" className="font-semibold text-brand underline">
+      <Link to="/" className="font-semibold text-link underline">
         Go to your dashboard
       </Link>
     </div>
