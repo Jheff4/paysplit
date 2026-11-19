@@ -1,4 +1,14 @@
-import { APP_TIME_ZONE, formatCalendarDate, formatDate, formatDateTime, isoDateInZone } from './dates'
+import {
+  APP_TIME_ZONE,
+  formatCalendarDate,
+  formatDate,
+  formatDateTime,
+  formatDay,
+  formatLongDate,
+  formatPeriod,
+  greetingFor,
+  isoDateInZone,
+} from './dates'
 
 const nearMidnightUtc = '2026-11-18T23:30:00.000Z'
 
@@ -38,4 +48,30 @@ describe('formatCalendarDate', () => {
     expect(() => formatCalendarDate('2026-13-01')).toThrow()
     expect(() => formatCalendarDate('18/10/2026')).toThrow()
   })
+})
+
+describe('dashboard date helpers', () => {
+  test('the greeting follows the Lagos clock, not the viewer clock', () => {
+    expect(greetingFor(new Date('2026-11-18T23:30:00Z'))).toBe('Good Evening')
+    expect(greetingFor(new Date('2026-11-19T10:00:00Z'))).toBe('Good Morning')
+    expect(greetingFor(new Date('2026-11-19T12:00:00Z'))).toBe('Good Afternoon')
+    expect(greetingFor(new Date('2026-11-19T04:30:00Z'))).toBe('Good Morning')
+  })
+
+  test('the long date is the Lagos day with an ordinal', () => {
+    expect(formatLongDate(new Date('2026-11-18T23:30:00Z'))).toEqual({ weekday: 'Thursday', rest: 'November 19th, 2026' })
+    expect(formatLongDate(new Date('2026-12-01T12:00:00Z')).rest).toBe('December 1st, 2026')
+    expect(formatLongDate(new Date('2026-12-22T12:00:00Z')).rest).toBe('December 22nd, 2026')
+    expect(formatLongDate(new Date('2026-12-13T12:00:00Z')).rest).toBe('December 13th, 2026')
+  })
+
+  test('a YYYY-MM period becomes a short month label without time zone drift', () => {
+    expect(formatPeriod('2026-06')).toBe('Jun 26')
+    expect(formatPeriod('2026-01')).toBe('Jan 26')
+  })
+})
+
+test('formatDay treats date-only values as calendar days and instants as Lagos days', () => {
+  expect(formatDay('2026-11-28')).toBe('28 Nov 2026')
+  expect(formatDay('2026-11-27T23:30:00.000Z')).toBe('28 Nov 2026')
 })

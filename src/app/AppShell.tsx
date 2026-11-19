@@ -1,4 +1,5 @@
 import { ArrowLeftRight, Bell, ChevronDown, House, LogOut, Search, Settings, Split, UserRound, Wallet } from 'lucide-react'
+import { useQuery } from '@tanstack/react-query'
 import { AlertDialog, DropdownMenu } from 'radix-ui'
 import { useState } from 'react'
 import { Link, NavLink, Outlet } from 'react-router'
@@ -7,6 +8,7 @@ import { NavigationProgress } from '@/components/NavigationProgress'
 import { Button } from '@/components/ui/Button'
 import { useAuth } from '@/features/auth/useAuth'
 import { WelcomeDialog } from '@/features/auth/WelcomeDialog'
+import { notificationKeys, notificationsApi } from '@/features/notifications/api'
 import { cn } from '@/lib/cn'
 
 const NAV = [
@@ -100,6 +102,28 @@ function ProfileMenu({ onSignOut }: { onSignOut: () => void }) {
   )
 }
 
+function NotificationsLink() {
+  const badge = useQuery({ queryKey: notificationKeys.badge, queryFn: notificationsApi.badge, refetchInterval: 60_000 })
+  const unread = typeof badge.data?.unreadCount === 'number' ? badge.data.unreadCount : 0
+  return (
+    <Link
+      to="/notifications"
+      aria-label={unread ? `Notifications, ${unread} unread` : 'Notifications'}
+      className={cn(iconButtonClass, 'relative')}
+    >
+      <Bell aria-hidden="true" className="size-5" />
+      {unread > 0 && (
+        <span
+          aria-hidden="true"
+          className="absolute -top-1.5 -right-1.5 grid h-5 min-w-5 place-items-center rounded-full bg-danger px-1 text-[11px] font-semibold text-white"
+        >
+          {unread > 9 ? '9+' : unread}
+        </span>
+      )}
+    </Link>
+  )
+}
+
 export function AppShell() {
   const [signOutOpen, setSignOutOpen] = useState(false)
 
@@ -144,9 +168,7 @@ export function AppShell() {
           <Link to="/transactions" aria-label="Search transactions" className={cn(iconButtonClass, 'hidden sm:grid')}>
             <Search aria-hidden="true" className="size-5" />
           </Link>
-          <Link to="/notifications" aria-label="Notifications" className={iconButtonClass}>
-            <Bell aria-hidden="true" className="size-5" />
-          </Link>
+          <NotificationsLink />
           <ProfileMenu onSignOut={() => setSignOutOpen(true)} />
         </div>
       </header>

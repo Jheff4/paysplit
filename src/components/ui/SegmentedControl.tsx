@@ -9,8 +9,10 @@ export function SegmentedControl<T extends string>({
   options,
   value,
   onChange,
+  hideLabel = false,
 }: {
   label: string
+  hideLabel?: boolean
   options: Option<T>[]
   value: T
   onChange: (value: T) => void
@@ -18,7 +20,7 @@ export function SegmentedControl<T extends string>({
   const id = useId()
   return (
     <div className="flex flex-col gap-1.5">
-      <span id={id} className="text-sm font-medium text-label">
+      <span id={id} className={cn('text-sm font-medium text-label', hideLabel && 'sr-only')}>
         {label}
       </span>
       <RadioGroup.Root

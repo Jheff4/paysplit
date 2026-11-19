@@ -1,4 +1,4 @@
-import { formatMoney, minorDigits, minorToInputString, parseMoneyInput } from './money'
+import { formatMoney, formatMoneyCompact, minorDigits, minorToInputString, parseMoneyInput } from './money'
 
 describe('minorDigits', () => {
   test('comes from the currency, not a 2-decimal assumption', () => {
@@ -71,5 +71,21 @@ describe('minorToInputString', () => {
     expect(minorToInputString(1500, 'JPY')).toBe('1500')
     expect(minorToInputString(1234, 'KWD')).toBe('1.234')
     expect(minorToInputString(5, 'NGN')).toBe('0.05')
+  })
+})
+
+describe('headline amounts', () => {
+  test('drop .00 only when there are no minor units, as in the Figma', () => {
+    expect(formatMoney(85_000_000, 'NGN', undefined, { trimZeroMinor: true })).toBe('₦850,000')
+    expect(formatMoney(85_000_050, 'NGN', undefined, { trimZeroMinor: true })).toBe('₦850,000.50')
+    expect(formatMoney(1_234_000, 'KWD', 'en-US', { trimZeroMinor: true })).toBe('KWD 1,234')
+    expect(formatMoney(1500, 'JPY', 'en-US', { trimZeroMinor: true })).toBe('¥1,500')
+  })
+
+  test('compact axis labels for charts', () => {
+    expect(formatMoneyCompact(150_000_000, 'NGN')).toBe('₦1.5M')
+    expect(formatMoneyCompact(4_500_000, 'NGN')).toBe('₦45K')
+    expect(formatMoneyCompact(0, 'NGN')).toBe('₦0')
+    expect(formatMoneyCompact(-2_500_000, 'NGN')).toBe('-₦25K')
   })
 })

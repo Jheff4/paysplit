@@ -44,7 +44,11 @@ export const routes: RouteObject[] = [
           </RequireAuth>
         ),
         children: [
-          { index: true, element: <StubPage title="Dashboard" /> },
+          {
+            index: true,
+            lazy: () => import('@/pages/dashboard/DashboardPage').then((m) => ({ Component: m.DashboardPage })),
+          },
+          { path: 'setup', element: <StubPage title="Setup checklist" /> },
           {
             path: 'verify-identity',
             lazy: () => import('@/pages/kyc/KycPage').then((m) => ({ Component: m.KycPage })),
@@ -56,7 +60,10 @@ export const routes: RouteObject[] = [
           { path: 'split-runs/:runId', element: <StubPage title="Split run" /> },
           { path: 'transactions', element: <StubPage title="Transactions" /> },
           { path: 'transactions/:transactionId', element: <StubPage title="Transaction" /> },
-          { path: 'notifications', element: <StubPage title="Notifications" /> },
+          {
+            path: 'notifications',
+            lazy: () => import('@/pages/notifications/NotificationsPage').then((m) => ({ Component: m.NotificationsPage })),
+          },
           { path: 'settings', element: <StubPage title="Settings" /> },
         ],
       },

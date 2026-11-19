@@ -18,10 +18,31 @@ function toDecimalString(minor: number, digits: number): `${number}` {
   return `${sign}${padded.slice(0, -digits)}.${padded.slice(-digits)}` as `${number}`
 }
 
-export function formatMoney(minor: number, currency: string, locale: string = APP_LOCALE): string {
-  return new Intl.NumberFormat(locale, { style: 'currency', currency }).format(
-    toDecimalString(minor, minorDigits(currency)),
-  )
+export function formatMoney(
+  minor: number,
+  currency: string,
+  locale: string = APP_LOCALE,
+  options: { trimZeroMinor?: boolean } = {},
+): string {
+  const digits = minorDigits(currency)
+  const whole = digits === 0 || minor % 10 ** digits === 0
+  const fractionDigits = options.trimZeroMinor && whole ? 0 : digits
+  return new Intl.NumberFormat(locale, {
+    style: 'currency',
+    currency,
+    minimumFractionDigits: fractionDigits,
+    maximumFractionDigits: fractionDigits,
+  }).format(toDecimalString(minor, digits))
+}
+
+export function formatMoneyCompact(minor: number, currency: string, locale: string = APP_LOCALE): string {
+  return new Intl.NumberFormat(locale, {
+    style: 'currency',
+    currency,
+    notation: 'compact',
+    minimumFractionDigits: 0,
+    maximumFractionDigits: 1,
+  }).format(toDecimalString(Math.round(minor), minorDigits(currency)))
 }
 
 export function minorToInputString(minor: number, currency: string, locale: string = APP_LOCALE): string {

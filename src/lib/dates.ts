@@ -54,3 +54,47 @@ export function formatCalendarDate(dateOnly: string): string {
   }
   return calendarFormat.format(utc)
 }
+
+function partsInZone(instant: Date, timeZone: string = APP_TIME_ZONE) {
+  const parts = new Intl.DateTimeFormat('en-US', {
+    timeZone,
+    weekday: 'long',
+    month: 'long',
+    day: 'numeric',
+    year: 'numeric',
+    hour: 'numeric',
+    hourCycle: 'h23',
+  }).formatToParts(instant)
+  const get = (type: Intl.DateTimeFormatPartTypes) => parts.find((p) => p.type === type)?.value ?? ''
+  return { weekday: get('weekday'), month: get('month'), day: Number(get('day')), year: get('year'), hour: Number(get('hour')) }
+}
+
+export function greetingFor(instant: Date): string {
+  const { hour } = partsInZone(instant)
+  if (hour >= 5 && hour < 12) return 'Good Morning'
+  if (hour >= 12 && hour < 17) return 'Good Afternoon'
+  return 'Good Evening'
+}
+
+function ordinal(day: number): string {
+  const tens = day % 100
+  if (tens >= 11 && tens <= 13) return `${day}th`
+  return `${day}${({ 1: 'st', 2: 'nd', 3: 'rd' } as Record<number, string>)[day % 10] ?? 'th'}`
+}
+
+export function formatLongDate(instant: Date): { weekday: string; rest: string } {
+  const { weekday, month, day, year } = partsInZone(instant)
+  return { weekday, rest: `${month} ${ordinal(day)}, ${year}` }
+}
+
+const periodFormat = new Intl.DateTimeFormat('en-US', { timeZone: 'UTC', month: 'short', year: '2-digit' })
+
+export function formatPeriod(period: string): string {
+  const match = /^(\d{4})-(\d{2})$/.exec(period)
+  if (!match) return period
+  return periodFormat.format(new Date(Date.UTC(Number(match[1]), Number(match[2]) - 1, 1)))
+}
+
+export function formatDay(value: string): string {
+  return /^\d{4}-\d{2}-\d{2}$/.test(value) ? formatCalendarDate(value) : formatDate(value)
+}

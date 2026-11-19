@@ -1,6 +1,7 @@
 import { screen, waitFor, within } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { http, HttpResponse } from 'msw'
+import { mockDashboard, summary } from '@/test/fixtures'
 import { apiUrl, renderRoute, server, setupMockApi } from '@/test/utils'
 
 setupMockApi()
@@ -46,14 +47,16 @@ describe('sign in', () => {
 
   test('without "remember me" the session ends with the tab', async () => {
     server.use(http.post(apiUrl('/auth/login'), () => HttpResponse.json({ accessToken: 'abc' })))
-    renderRoute('/sign-in')
+    mockDashboard(summary())
+    const { router } = renderRoute('/sign-in')
     const user = userEvent.setup()
 
     await user.type(await screen.findByLabelText('Email'), 'ada@example.com')
     await user.type(screen.getByLabelText('Password'), 'P@ssword123')
     await user.click(screen.getByRole('button', { name: 'Sign in' }))
 
-    await heading('Dashboard')
+    await waitFor(() => expect(router.state.location.pathname).toBe('/'))
+    expect(await screen.findByRole('heading', { name: 'Complete Onboarding' })).toBeInTheDocument()
     expect(sessionStorage.getItem('paysplit.session')).toBe('abc')
     expect(localStorage.getItem('paysplit.session')).toBeNull()
   })
@@ -136,6 +139,7 @@ describe('sign up', () => {
         return HttpResponse.json({ accessToken: 'session-1', onboarding: {} })
       }),
     )
+    mockDashboard(summary())
     renderRoute('/sign-up')
     const user = userEvent.setup()
 
