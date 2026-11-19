@@ -1,7 +1,6 @@
 import type { RouteObject } from 'react-router'
 import { NotFoundPage, RouteErrorPage } from '@/pages/system'
-import { AppShell } from './AppShell'
-import { PublicOnly, RequireAuth } from './guards'
+import { PublicOnly } from './guards'
 import { PublicLayout } from './PublicLayout'
 
 export const routes: RouteObject[] = [
@@ -38,11 +37,7 @@ export const routes: RouteObject[] = [
         ],
       },
       {
-        element: (
-          <RequireAuth>
-            <AppShell />
-          </RequireAuth>
-        ),
+        lazy: () => import('./ProtectedShell').then((m) => ({ Component: m.ProtectedShell })),
         children: [
           {
             index: true,
