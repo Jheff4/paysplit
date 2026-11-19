@@ -48,14 +48,27 @@ export const routes: RouteObject[] = [
             index: true,
             lazy: () => import('@/pages/dashboard/DashboardPage').then((m) => ({ Component: m.DashboardPage })),
           },
-          { path: 'setup', element: <StubPage title="Setup checklist" /> },
+          {
+            path: 'setup',
+            lazy: () => import('@/pages/setup/SetupPage').then((m) => ({ Component: m.SetupPage })),
+          },
           {
             path: 'verify-identity',
             lazy: () => import('@/pages/kyc/KycPage').then((m) => ({ Component: m.KycPage })),
           },
-          { path: 'destinations', element: <StubPage title="Destinations" /> },
-          { path: 'destinations/wallets/:walletId', element: <StubPage title="Wallet" /> },
-          { path: 'destinations/beneficiaries/:beneficiaryId', element: <StubPage title="Beneficiary" /> },
+          {
+            path: 'destinations',
+            lazy: () => import('@/pages/destinations/DestinationsPage').then((m) => ({ Component: m.DestinationsPage })),
+          },
+          {
+            path: 'destinations/wallets/:walletId',
+            lazy: () => import('@/pages/destinations/WalletDetailPage').then((m) => ({ Component: m.WalletDetailPage })),
+          },
+          {
+            path: 'destinations/beneficiaries/:beneficiaryId',
+            lazy: () =>
+              import('@/pages/destinations/BeneficiaryDetailPage').then((m) => ({ Component: m.BeneficiaryDetailPage })),
+          },
           { path: 'split-rules', element: <StubPage title="Split rules" /> },
           { path: 'split-runs/:runId', element: <StubPage title="Split run" /> },
           { path: 'transactions', element: <StubPage title="Transactions" /> },

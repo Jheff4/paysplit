@@ -2,9 +2,8 @@ import { useQuery } from '@tanstack/react-query'
 import { ChevronRight, Wallet as WalletIcon } from 'lucide-react'
 import { Link } from 'react-router'
 import { ErrorState, LoadingBlock } from '@/components/ui/states'
-import { cn } from '@/lib/cn'
 import { formatMoney } from '@/lib/money'
-import { ACCENT_CLASSES, walletKeys, walletsApi } from '@/features/wallets/api'
+import { accentHex, walletKeys, walletsApi } from '@/features/wallets/api'
 
 export function WalletsCard({ currency }: { currency: string }) {
   const wallets = useQuery({ queryKey: walletKeys.all, queryFn: walletsApi.list })
@@ -37,11 +36,15 @@ export function WalletsCard({ currency }: { currency: string }) {
       ) : (
         <ul className="flex flex-col gap-2">
           {wallets.data.slice(0, 4).map((w) => {
-            const accent = ACCENT_CLASSES[w.accentColor] ?? ACCENT_CLASSES.blue!
+            const hex = accentHex(w.accentColor)
             return (
               <li key={w.id}>
-                <Link to={`/destinations/wallets/${w.id}`} className={cn('flex items-center gap-3 rounded-xl p-3', accent.soft)}>
-                  <span className={cn('grid size-10 shrink-0 place-items-center rounded-lg text-white', accent.solid)}>
+                <Link
+                  to={`/destinations/wallets/${w.id}`}
+                  className="flex items-center gap-3 rounded-xl p-3"
+                  style={{ backgroundColor: `${hex}1a` }}
+                >
+                  <span className="grid size-10 shrink-0 place-items-center rounded-lg text-white" style={{ backgroundColor: hex }}>
                     <WalletIcon aria-hidden="true" className="size-5" />
                   </span>
                   <span className="min-w-0 flex-1">

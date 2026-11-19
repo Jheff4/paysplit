@@ -2,26 +2,15 @@ import { useQuery } from '@tanstack/react-query'
 import { ChevronRight, Search } from 'lucide-react'
 import { useDeferredValue, useState } from 'react'
 import { Link } from 'react-router'
-import type { Transaction } from '@/api/types'
 import { SegmentedControl } from '@/components/ui/SegmentedControl'
 import { ErrorState, LoadingBlock } from '@/components/ui/states'
 import { cn } from '@/lib/cn'
 import { formatDate } from '@/lib/dates'
-import { formatMoney } from '@/lib/money'
+import { signedMoney, txTitle } from '@/features/transactions/format'
 import { StatusBadge } from '@/features/transactions/StatusBadge'
 import { dashboardApi } from './api'
 
 type Tab = 'all' | 'wallet' | 'beneficiary'
-
-function signed(tx: Transaction, fallbackCurrency: string) {
-  const currency = tx.currency ?? fallbackCurrency
-  const value = formatMoney(Math.abs(tx.signedAmount), currency)
-  return tx.signedAmount < 0 ? `-${value}` : `+${value}`
-}
-
-function title(tx: Transaction) {
-  return tx.destinationName ?? tx.description ?? tx.narration ?? tx.reference
-}
 
 export function RecentActivity({ currency }: { currency: string }) {
   const [tab, setTab] = useState<Tab>('all')
@@ -95,7 +84,7 @@ export function RecentActivity({ currency }: { currency: string }) {
             <tbody>
               {rows.map((tx) => (
                 <tr key={tx.id} className="border-b border-line last:border-0">
-                  <td className="py-3 text-ink">{title(tx)}</td>
+                  <td className="py-3 text-ink">{txTitle(tx)}</td>
                   <td className="py-3">
                     {tx.category && <span className="rounded-lg border border-line px-2.5 py-1 text-xs">{tx.category}</span>}
                   </td>
@@ -104,12 +93,12 @@ export function RecentActivity({ currency }: { currency: string }) {
                     <StatusBadge status={tx.status} />
                   </td>
                   <td className={cn('py-3 text-right font-medium', tx.signedAmount < 0 ? 'text-ink' : 'text-success')}>
-                    {signed(tx, currency)}
+                    {signedMoney(tx, currency)}
                   </td>
                   <td className="py-3 text-right">
                     <Link
                       to={`/transactions/${tx.id}`}
-                      aria-label={`Details for ${title(tx)}`}
+                      aria-label={`Details for ${txTitle(tx)}`}
                       className="inline-grid size-9 place-items-center rounded-lg hover:bg-canvas"
                     >
                       <ChevronRight aria-hidden="true" className="size-4" />
@@ -124,12 +113,12 @@ export function RecentActivity({ currency }: { currency: string }) {
               <li key={tx.id}>
                 <Link to={`/transactions/${tx.id}`} className="flex items-center justify-between gap-3 rounded-xl border border-line p-3">
                   <span className="min-w-0">
-                    <span className="block truncate text-sm font-medium text-ink">{title(tx)}</span>
+                    <span className="block truncate text-sm font-medium text-ink">{txTitle(tx)}</span>
                     <span className="block text-xs text-muted">{formatDate(tx.createdAt)}</span>
                   </span>
                   <span className="flex shrink-0 flex-col items-end gap-1">
                     <span className={cn('text-sm font-medium', tx.signedAmount < 0 ? 'text-ink' : 'text-success')}>
-                      {signed(tx, currency)}
+                      {signedMoney(tx, currency)}
                     </span>
                     <StatusBadge status={tx.status} />
                   </span>
