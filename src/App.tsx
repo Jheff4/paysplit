@@ -1,7 +1,13 @@
+import { createBrowserRouter, RouterProvider } from 'react-router'
+import { AppProviders } from './app/providers'
+import { routes } from './app/routes'
+
+const router = createBrowserRouter(routes)
+
 export function App() {
   return (
-    <main className="grid min-h-dvh place-items-center p-6">
-      <h1 className="text-2xl font-semibold">PaySplit</h1>
-    </main>
+    <AppProviders>
+      <RouterProvider router={router} />
+    </AppProviders>
   )
 }
