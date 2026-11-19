@@ -1,13 +1,14 @@
 import { useQuery } from '@tanstack/react-query'
 import { Check, Split, Users, Wallet, Banknote } from 'lucide-react'
 import { useState } from 'react'
-import { Link, useNavigate } from 'react-router'
+import { useNavigate } from 'react-router'
 import type { Onboarding } from '@/api/types'
 import { Button } from '@/components/ui/Button'
 import { QueryView } from '@/components/ui/states'
 import { useAccountCurrency } from '@/features/account/useAccountCurrency'
 import { BeneficiaryForm } from '@/features/beneficiaries/BeneficiaryForm'
 import { setupApi, setupKeys } from '@/features/setup/api'
+import { RuleForm } from '@/features/rules/RuleForm'
 import { IncomeForm } from '@/features/setup/IncomeForm'
 import { WalletForm } from '@/features/wallets/WalletForm'
 import { StepHeading } from '@/features/kyc/StepHeading'
@@ -114,12 +115,7 @@ function Wizard({ onboarding }: { onboarding: Onboarding }) {
       {step === 'rule' && (
         <section className="flex flex-col gap-4">
           <StepHeading title="Create your first split rule" description="Decide how much goes to each wallet or beneficiary." />
-          <Link
-            to="/split-rules?create=1"
-            className="inline-flex min-h-15 items-center justify-center rounded-xl bg-brand px-4 font-medium text-on-brand hover:bg-brand-hover"
-          >
-            Create a split rule
-          </Link>
+          <RuleForm currency={currency} submitLabel="Complete Setup & Launch Dashboard" onSaved={() => navigate('/')} />
           <div className="flex flex-col-reverse gap-3 sm:flex-row">
             {backButton}
             <Button variant="secondary" size="lg" className="flex-1" onClick={() => navigate('/')}>

@@ -69,8 +69,14 @@ export const routes: RouteObject[] = [
             lazy: () =>
               import('@/pages/destinations/BeneficiaryDetailPage').then((m) => ({ Component: m.BeneficiaryDetailPage })),
           },
-          { path: 'split-rules', element: <StubPage title="Split rules" /> },
-          { path: 'split-runs/:runId', element: <StubPage title="Split run" /> },
+          {
+            path: 'split-rules',
+            lazy: () => import('@/pages/rules/SplitRulesPage').then((m) => ({ Component: m.SplitRulesPage })),
+          },
+          {
+            path: 'split-runs/:runId',
+            lazy: () => import('@/pages/rules/SplitRunPage').then((m) => ({ Component: m.SplitRunPage })),
+          },
           { path: 'transactions', element: <StubPage title="Transactions" /> },
           { path: 'transactions/:transactionId', element: <StubPage title="Transaction" /> },
           {
