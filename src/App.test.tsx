@@ -1,4 +1,4 @@
-import { render, screen, waitFor } from '@testing-library/react'
+import { render, screen, waitFor, within } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { createMemoryRouter, RouterProvider } from 'react-router'
 import { api } from './api/client'
@@ -24,10 +24,10 @@ afterEach(() => {
 })
 
 test('a signed-out visitor to a private page is sent to sign in, keeping where they were going', async () => {
-  const router = renderAt('/wallets?tab=all')
-  expect(await screen.findByRole('heading', { level: 1, name: 'Sign in' })).toBeInTheDocument()
+  const router = renderAt('/destinations?tab=wallets')
+  expect(await screen.findByRole('heading', { level: 1, name: 'Welcome back!' })).toBeInTheDocument()
   expect(router.state.location.pathname).toBe('/sign-in')
-  expect(router.state.location.search).toBe(`?next=${encodeURIComponent('/wallets?tab=all')}`)
+  expect(router.state.location.search).toBe(`?next=${encodeURIComponent('/destinations?tab=wallets')}`)
 })
 
 test('a signed-in user sees the app with navigation', async () => {
@@ -49,7 +49,7 @@ test('an expired session anywhere returns the user to sign in and wipes cached d
   )
   await api('/auth/me').catch(() => undefined)
 
-  expect(await screen.findByRole('heading', { level: 1, name: 'Sign in' })).toBeInTheDocument()
+  expect(await screen.findByRole('heading', { level: 1, name: 'Welcome back!' })).toBeInTheDocument()
   expect(queryClient.getQueryData(['private'])).toBeUndefined()
   expect(tokenStore.lastSignOutReason()).toBe('expired')
 })
@@ -60,11 +60,12 @@ test('sign out asks for confirmation and explains it signs out every device', as
   renderAt('/')
   const user = userEvent.setup()
 
-  await user.click((await screen.findAllByRole('button', { name: 'Sign out' }))[0]!)
+  await user.click(await screen.findByRole('button', { name: 'Account menu' }))
+  await user.click(await screen.findByRole('menuitem', { name: 'Sign out' }))
   const dialog = await screen.findByRole('alertdialog', { name: 'Sign out of PaySplit?' })
   expect(dialog).toHaveTextContent('signs you out on all your devices')
 
-  await user.click(screen.getAllByRole('button', { name: 'Sign out' }).at(-1)!)
-  await waitFor(() => expect(screen.getByRole('heading', { level: 1, name: 'Sign in' })).toBeInTheDocument())
+  await user.click(within(dialog).getByRole('button', { name: 'Sign out' }))
+  await waitFor(() => expect(screen.getByRole('heading', { level: 1, name: 'Welcome back!' })).toBeInTheDocument())
   expect(tokenStore.get()).toBeNull()
 })

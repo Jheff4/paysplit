@@ -1,7 +1,10 @@
 import { useId, type ComponentProps, type ReactNode } from 'react'
 import { cn } from '@/lib/cn'
 
-type TextFieldProps = Omit<ComponentProps<'input'>, 'id'> & {
+export const fieldBoxClass =
+  'flex min-h-15 items-center gap-2 rounded-xl border bg-surface px-3.5 shadow-xs focus-within:outline-2 focus-within:outline-offset-2 focus-within:outline-link'
+
+type TextFieldProps = Omit<ComponentProps<'input'>, 'id' | 'prefix'> & {
   label: string
   hint?: ReactNode
   error?: string
@@ -16,7 +19,7 @@ export function TextField({ label, hint, error, prefix, className, required, ...
 
   return (
     <div className={cn('flex flex-col gap-1.5', className)}>
-      <label htmlFor={id} className="text-sm font-medium text-ink">
+      <label htmlFor={id} className="text-sm font-medium text-label">
         {label}
         {required && (
           <span aria-hidden="true" className="text-danger">
@@ -25,19 +28,14 @@ export function TextField({ label, hint, error, prefix, className, required, ...
           </span>
         )}
       </label>
-      <div
-        className={cn(
-          'flex min-h-11 items-center gap-2 rounded-lg border bg-surface px-3 focus-within:outline-2 focus-within:outline-offset-2 focus-within:outline-brand',
-          error ? 'border-danger' : 'border-line',
-        )}
-      >
-        {prefix && <span className="text-sm text-muted">{prefix}</span>}
+      <div className={cn(fieldBoxClass, error ? 'border-danger' : 'border-field')}>
+        {prefix && <span className="text-base text-muted">{prefix}</span>}
         <input
           id={id}
           required={required}
           aria-invalid={error ? true : undefined}
           aria-describedby={describedBy}
-          className="min-w-0 flex-1 bg-transparent py-2 text-base text-ink outline-none placeholder:text-muted/70"
+          className="min-w-0 flex-1 bg-transparent py-2.5 text-base text-ink outline-none placeholder:text-placeholder"
           {...props}
         />
       </div>
