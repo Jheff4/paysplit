@@ -2,7 +2,7 @@
 
 PaySplit routes a salary into wallets and transfers automatically, by rules the user sets. This repository is the **web app**: React and TypeScript, built to the PaySplit Figma and running against the provided PaySplit API.
 
-- **Live app:** _add the Vercel URL here after deploying_
+- **Live app:** https://paysplit-bice.vercel.app
 - **Demo video:** _add the link here_
 - **Tool-choice writeup:** [docs/TOOL-CHOICES.md](docs/TOOL-CHOICES.md)
 
