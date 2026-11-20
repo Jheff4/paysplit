@@ -102,6 +102,7 @@ Measured with `scripts/perf.mjs` on the production build: Chromium, 150 ms round
 |---|---|---|
 | Before: signed-in shell in the main bundle | 1,692 ms | 192 KB |
 | After: shell lazy-loaded | 1,504 ms | 156 KB |
+| **Improvement** | **11% faster** | **19% less** |
 
 The shell is then prefetched when the browser is idle, after first paint (1,496 ms), so signing in does not wait for a download. Adding the self-hosted Inter font afterwards left first paint at 1,508 ms: it uses `font-display: swap`, so text shows at once, and adds about 48 KB. Every page is a lazy route, so the chart library only loads on the dashboard. No data is hidden or truncated to get these numbers.
 
