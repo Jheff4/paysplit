@@ -113,12 +113,13 @@ The API contract is treated as the source of truth (Project Scope, section 8). W
 |---|---|---|---|
 | 1 | Percentage rules use the original salary (FR-15) | Run Now applies percentages to the balance at run time | The preview is labelled as based on your monthly salary; Run Now says PaySplit confirms final amounts |
 | 2 | Draft rules allowed before KYC (FR-06) | `POST /split-rules` returns `KYC_REQUIRED`, even with `status: paused` (tested live) | Rule creation explains it unlocks after verification, instead of a form that fails |
-| 3 | Fees shown when moving money (FR-11) | No fee in any response | No fee is shown; nothing is invented |
-| 4 | PDF statements | CSV export only | CSV download plus printable statement and receipt (Save as PDF) |
-| 5 | Wallet description, beneficiary name field | Not in the API; the name comes from bank lookup | Built to the API; the resolved name must show before saving |
-| 6 | Admin dashboard | Admin endpoints exist | Out of scope for the Frontend role brief |
+| 3 | Beneficiaries can be added before KYC (FR-06) | `POST /beneficiaries/resolve` returns `KYC_REQUIRED` for unverified users (tested live) | The lookup shows the reason and saving stays blocked |
+| 4 | Fees shown when moving money (FR-11) | No fee in any response | No fee is shown; nothing is invented |
+| 5 | PDF statements | CSV export only | CSV download plus printable statement and receipt (Save as PDF) |
+| 6 | Wallet description, beneficiary name field | Not in the API; the name comes from bank lookup | Built to the API; the resolved name must show before saving |
+| 7 | Admin dashboard | Admin endpoints exist | Out of scope for the Frontend role brief |
 
-**Questions for the product owner:** should unverified users be able to save draft rules (#2)? Which base should percentages use (#1)?
+**Questions for the product owner:** should unverified users be able to save draft rules (#2) and beneficiaries (#3)? Which base should percentages use (#1)?
 
 ## Design deviations from Figma (and why)
 
