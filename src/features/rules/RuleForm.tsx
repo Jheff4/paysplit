@@ -83,8 +83,8 @@ export function RuleForm({
   const lockedByKyc = !rule && !kycApproved
   const wallets = useQuery({ queryKey: walletKeys.all, queryFn: walletsApi.list })
   const beneficiaries = useQuery({
-    queryKey: ['beneficiaries', 'all-active'],
-    queryFn: () => beneficiariesApi.list(1, 'all', ''),
+    queryKey: ['beneficiaries', 'rule-options'],
+    queryFn: () => beneficiariesApi.list(1, 'all', '', 100),
   })
 
   const {

@@ -188,3 +188,17 @@ test('pausing a rule sends the new status', async () => {
   await user.click(await screen.findByRole('button', { name: 'Pause Mum' }))
   await waitFor(() => expect(patched).toEqual({ status: 'paused' }))
 })
+
+test('the beneficiary picker loads up to 100 beneficiaries, not just the first page of 10', async () => {
+  let limit: string | null = null
+  mockRulesPage()
+  server.use(
+    http.get(apiUrl('/beneficiaries'), ({ request }) => {
+      limit = new URL(request.url).searchParams.get('limit')
+      return HttpResponse.json(emptyPage)
+    }),
+  )
+  renderRoute('/split-rules?create=1')
+  await screen.findByRole('dialog', { name: 'Create Split Rule' })
+  await waitFor(() => expect(limit).toBe('100'))
+})

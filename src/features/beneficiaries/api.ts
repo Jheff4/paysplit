@@ -41,8 +41,8 @@ export const beneficiariesApi = {
   banks: () => api<Bank[]>('/banks'),
   resolve: (body: { bankCode: string; accountNumber: string }, signal?: AbortSignal) =>
     api<ResolvedAccount>('/beneficiaries/resolve', { method: 'POST', body, signal }),
-  list: (page: number, status: string, search: string) =>
-    api<Paged<Beneficiary>>('/beneficiaries', { query: { page, status, search } }),
+  list: (page: number, status: string, search: string, limit = 10) =>
+    api<Paged<Beneficiary>>('/beneficiaries', { query: { page, status, search, limit } }),
   get: (id: string) => api<BeneficiaryDetail>(`/beneficiaries/${encodeURIComponent(id)}`),
   create: (body: BeneficiaryInput) => api<Beneficiary>('/beneficiaries', { method: 'POST', body }),
   update: (id: string, body: { categoryId?: string; narration?: string | null; status?: 'active' | 'paused' }) =>

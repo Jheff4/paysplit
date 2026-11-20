@@ -103,7 +103,7 @@ Measured with `scripts/perf.mjs` on the production build: Chromium, 150 ms round
 | Before: signed-in shell in the main bundle | 1,692 ms | 192 KB |
 | After: shell lazy-loaded | 1,504 ms | 156 KB |
 
-The shell is then prefetched when the browser is idle, after first paint (1,496 ms), so signing in does not wait for a download. Every page is a lazy route, so the chart library only loads on the dashboard. No data is hidden or truncated to get these numbers.
+The shell is then prefetched when the browser is idle, after first paint (1,496 ms), so signing in does not wait for a download. Adding the self-hosted Inter font afterwards left first paint at 1,508 ms: it uses `font-display: swap`, so text shows at once, and adds about 48 KB. Every page is a lazy route, so the chart library only loads on the dashboard. No data is hidden or truncated to get these numbers.
 
 ## Product decisions and open questions
 
@@ -127,7 +127,6 @@ The API contract is treated as the source of truth (Project Scope, section 8). W
 - **Phones**: Figma has desktop web frames only. Phones get a bottom tab bar based on the mobile app design; every page is checked at 360px with no sideways scrolling.
 - **Additions**: Run Now, split history, transaction status and date filters, which the PRD requires but the Figma omits.
 - **Removed**: the "Contact support" card, because there is no real support destination.
-- **Font**: the design uses Inter; until a self-hosted font is added the system font is used.
 
 ## Known limits
 

@@ -25,6 +25,7 @@ What I used to build the PaySplit web app, and why. Everything is free and open 
 |---|---|
 | **Tailwind CSS v4** | Figma tokens (colours, radii, shadows) live as CSS variables in one `@theme` block, so matching the design and the responsive breakpoints stays consistent. No runtime CSS-in-JS cost. |
 | **Radix UI primitives** | Dialogs, alert dialogs, menus, radio groups and switches with correct focus trapping, keyboard support and ARIA. Unstyled, so they match the Figma exactly. Building these by hand is where accessibility usually breaks. |
+| **@fontsource-variable/inter** | The Figma's Inter font, self-hosted with the app, so the Content-Security-Policy can stay `font-src 'self'` and no request goes to Google Fonts. |
 | **lucide-react** | Consistent, tree-shaken icons, matching the Figma's line icons. |
 | **Recharts** | The cash-flow bar chart (positive and negative bars). Lazy-loaded with the dashboard only; a hidden data table provides the same information to screen readers. |
 
