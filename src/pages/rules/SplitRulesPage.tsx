@@ -30,17 +30,16 @@ function SummarySkeleton() {
       className="flex flex-col gap-4 rounded-[20px] bg-gradient-to-b from-[#eaf6ff] to-surface p-5"
     >
       <div className="flex flex-wrap items-end justify-between gap-4">
-        <div className="flex flex-col gap-2">
-          <Skeleton className="h-3 w-36" />
-          <Skeleton className="h-9 w-48" />
+        <div className="flex flex-col gap-1">
+          <Skeleton className="h-3.5 w-36" />
+          <Skeleton className="h-8 w-48" />
         </div>
         <div className="flex gap-6">
           <Skeleton className="h-10 w-24" />
           <Skeleton className="h-10 w-24" />
         </div>
       </div>
-      <Skeleton className="h-3 w-full rounded-full" />
-      <Skeleton className="h-4 w-2/3" />
+      <Skeleton className="h-28 w-full rounded-xl sm:h-[54px]" />
     </LoadingStatus>
   )
 }

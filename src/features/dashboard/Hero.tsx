@@ -35,13 +35,13 @@ function NotificationCard({ fallback }: { fallback: string }) {
         </Link>
       </div>
       {latest.isPending ? (
-        <div role="status" className="mt-6 flex flex-col gap-2.5 py-1">
+        <div role="status" className="mt-6 flex h-[84px] w-[287px] max-w-full flex-col gap-2.5 py-1.5">
           <span className="sr-only">Loading your latest update</span>
           <div aria-hidden="true" className="h-4 w-full animate-pulse rounded-md bg-white/15 motion-reduce:animate-none" />
           <div aria-hidden="true" className="h-4 w-2/3 animate-pulse rounded-md bg-white/15 motion-reduce:animate-none" />
         </div>
       ) : (
-        <p className="mt-6 line-clamp-3 text-lg leading-7">{text}</p>
+        <p className="mt-6 line-clamp-3 min-h-[84px] text-lg leading-7">{text}</p>
       )}
     </section>
   )

@@ -32,8 +32,8 @@ export function RunNowButton({ currency }: { currency: string }) {
           <Play aria-hidden="true" className="size-4" />
           Run Now
         </Button>
-        {reason && (
-          <p id="run-now-reason" className="max-w-56 text-right text-xs text-muted">
+        {(reason || !account) && (
+          <p id="run-now-reason" aria-hidden={!reason} className="min-h-8 w-56 text-right text-xs text-muted">
             {reason}
           </p>
         )}

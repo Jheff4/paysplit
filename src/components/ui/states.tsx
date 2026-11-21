@@ -109,11 +109,14 @@ export function ListSkeleton({
   )
 }
 
-export function CardGridSkeleton({ label, count = 3 }: { label: string; count?: number }) {
+export function CardGridSkeleton({ label }: { label: string }) {
   return (
     <LoadingStatus label={label} className="grid gap-4 md:grid-cols-2 xl:grid-cols-3">
-      {Array.from({ length: count }, (_, i) => (
-        <div key={i} className="flex flex-col gap-5 rounded-[20px] bg-chip/60 p-5">
+      {[0, 1, 2].map((i) => (
+        <div
+          key={i}
+          className={cn('min-h-[192px] flex-col gap-5 rounded-[20px] bg-chip/60 p-5', i < 2 ? 'flex' : 'hidden xl:flex')}
+        >
           <div className="flex items-start justify-between gap-3">
             <div className="flex items-center gap-3">
               <Skeleton className="size-11 rounded-xl" />
