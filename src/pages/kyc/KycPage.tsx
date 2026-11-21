@@ -9,7 +9,7 @@ import tickLinear from '@/assets/tick-circle-linear.svg'
 import welcomeCheck from '@/assets/welcome-check.svg'
 import { Alert } from '@/components/ui/Alert'
 import { Button } from '@/components/ui/Button'
-import { QueryView } from '@/components/ui/states'
+import { FormSkeleton, QueryView } from '@/components/ui/states'
 import { kycApi, kycKeys, type KycStatus } from '@/features/kyc/api'
 import { IdentityStep } from '@/features/kyc/IdentityStep'
 import { LivenessStep } from '@/features/kyc/LivenessStep'
@@ -145,7 +145,7 @@ function KycContent({ status }: { status: KycStatus }) {
     )
   } else {
     body = (
-      <QueryView query={countries} errorTitle="We could not load the list of countries">
+      <QueryView query={countries} loading={<FormSkeleton label="Loading the list of countries" />} errorTitle="We could not load the list of countries">
         {(list) =>
           shown === 'profile' ? (
             <ProfileStep key={status.steps.profile.countryCode ?? 'new'} status={status} countries={list} />

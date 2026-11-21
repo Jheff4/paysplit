@@ -3,7 +3,7 @@ import { ChevronRight, Search } from 'lucide-react'
 import { useDeferredValue, useState } from 'react'
 import { Link } from 'react-router'
 import { SegmentedControl } from '@/components/ui/SegmentedControl'
-import { ErrorState, LoadingBlock } from '@/components/ui/states'
+import { ErrorState, TableSkeleton } from '@/components/ui/states'
 import { cn } from '@/lib/cn'
 import { formatDate } from '@/lib/dates'
 import { signedMoney, txTitle } from '@/features/transactions/format'
@@ -56,7 +56,7 @@ export function RecentActivity({ currency }: { currency: string }) {
       </div>
 
       {list.isPending ? (
-        <LoadingBlock label="Loading recent activity" rows={2} />
+        <TableSkeleton label="Loading recent activity" columns={6} rows={3} />
       ) : list.isError ? (
         <ErrorState error={list.error} title="We could not load your activity" onRetry={() => void list.refetch()} />
       ) : rows.length === 0 ? (

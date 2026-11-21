@@ -10,6 +10,7 @@ import { useAuth } from '@/features/auth/useAuth'
 import { WelcomeDialog } from '@/features/auth/WelcomeDialog'
 import { notificationKeys, notificationsApi } from '@/features/notifications/api'
 import { cn } from '@/lib/cn'
+import { warmRoute } from './prefetch'
 
 const NAV = [
   { to: '/', label: 'Dashboard', short: 'Home', Icon: House, end: true },
@@ -150,6 +151,8 @@ export function AppShell() {
                 <NavLink
                   to={to}
                   end={end}
+                  onPointerEnter={() => warmRoute(to)}
+                  onFocus={() => warmRoute(to)}
                   className={({ isActive }) =>
                     cn(
                       'flex items-center border-b-4 px-3 pt-1 text-sm text-ink',
@@ -184,6 +187,8 @@ export function AppShell() {
               <NavLink
                 to={to}
                 end={end}
+                onPointerDown={() => warmRoute(to)}
+                onFocus={() => warmRoute(to)}
                 className={({ isActive }) =>
                   cn(
                     'flex min-h-16 flex-col items-center justify-center gap-1 text-xs',

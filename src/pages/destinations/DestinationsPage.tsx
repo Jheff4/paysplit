@@ -7,7 +7,7 @@ import { Modal } from '@/components/ui/Modal'
 import { Pagination } from '@/components/ui/Pagination'
 import { SearchField } from '@/components/ui/SearchField'
 import { SegmentedControl } from '@/components/ui/SegmentedControl'
-import { EmptyState, QueryView } from '@/components/ui/states'
+import { CardGridSkeleton, EmptyState, QueryView, TableSkeleton } from '@/components/ui/states'
 import { useAccountCurrency } from '@/features/account/useAccountCurrency'
 import { beneficiariesApi, beneficiaryKeys, maskAccountNumber, type Beneficiary } from '@/features/beneficiaries/api'
 import { BeneficiaryForm } from '@/features/beneficiaries/BeneficiaryForm'
@@ -59,6 +59,7 @@ function WalletActivity({ currency }: { currency: string }) {
       </div>
       <QueryView
         query={activity}
+        loading={<TableSkeleton label="Loading wallet activity" columns={7} />}
         errorTitle="We could not load wallet activity"
         isEmpty={(d) => d.data.length === 0}
         empty={<p className="py-8 text-center text-sm text-muted">{q ? 'No matching activity.' : 'No wallet activity yet. Money appears here after your first split.'}</p>}
@@ -80,6 +81,7 @@ function WalletsTab({ currency }: { currency: string }) {
     <div className="flex flex-col gap-6">
       <QueryView
         query={wallets}
+        loading={<CardGridSkeleton label="Loading your wallets" />}
         errorTitle="We could not load your wallets"
         isEmpty={(d) => d.length === 0}
         empty={
@@ -143,6 +145,7 @@ function BeneficiariesTab() {
       </div>
       <QueryView
         query={list}
+        loading={<TableSkeleton label="Loading your beneficiaries" columns={6} />}
         errorTitle="We could not load your beneficiaries"
         isEmpty={(d) => d.data.length === 0}
         empty={

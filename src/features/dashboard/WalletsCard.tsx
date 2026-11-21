@@ -1,7 +1,7 @@
 import { useQuery } from '@tanstack/react-query'
 import { ChevronRight, Wallet as WalletIcon } from 'lucide-react'
 import { Link } from 'react-router'
-import { ErrorState, LoadingBlock } from '@/components/ui/states'
+import { ErrorState, ListSkeleton } from '@/components/ui/states'
 import { formatMoney } from '@/lib/money'
 import { accentHex, walletKeys, walletsApi } from '@/features/wallets/api'
 
@@ -19,7 +19,7 @@ export function WalletsCard({ currency }: { currency: string }) {
         </Link>
       </div>
       {wallets.isPending ? (
-        <LoadingBlock label="Loading wallets" rows={2} />
+        <ListSkeleton label="Loading wallets" rows={2} icon />
       ) : wallets.isError ? (
         <ErrorState error={wallets.error} title="We could not load your wallets" onRetry={() => void wallets.refetch()} />
       ) : wallets.data.length === 0 ? (

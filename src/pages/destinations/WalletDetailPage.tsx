@@ -11,7 +11,7 @@ import { Modal } from '@/components/ui/Modal'
 import { Pagination } from '@/components/ui/Pagination'
 import { SearchField } from '@/components/ui/SearchField'
 import { SegmentedControl } from '@/components/ui/SegmentedControl'
-import { QueryView } from '@/components/ui/states'
+import { LoadingStatus, QueryView, Skeleton, StatCardSkeleton, TableSkeleton } from '@/components/ui/states'
 import { useAccountCurrency } from '@/features/account/useAccountCurrency'
 import { LinkedRuleCard } from '@/features/rules/LinkedRuleCard'
 import { TransactionTable } from '@/features/transactions/TransactionTable'
@@ -65,6 +65,7 @@ function History({ walletId, currency }: { walletId: string; currency: string })
       </div>
       <QueryView
         query={history}
+        loading={<TableSkeleton label="Loading this wallet's history" columns={7} />}
         errorTitle="We could not load this wallet's history"
         isEmpty={(d) => d.data.length === 0}
         empty={<p className="py-8 text-center text-sm text-muted">{q ? 'No matching transactions.' : 'No money has moved in or out of this wallet yet.'}</p>}
@@ -134,6 +135,28 @@ function DeleteWallet({ wallet }: { wallet: WalletDetail }) {
   )
 }
 
+function WalletDetailSkeleton() {
+  return (
+    <LoadingStatus label="Loading this wallet" className="flex flex-col gap-5">
+      <div className="flex flex-wrap items-center justify-between gap-3">
+        <Skeleton className="h-6 w-48" />
+        <div className="flex gap-2">
+          <Skeleton className="h-11 w-24 rounded-xl" />
+          <Skeleton className="h-11 w-32 rounded-xl" />
+          <Skeleton className="h-11 w-24 rounded-xl" />
+        </div>
+      </div>
+      <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
+        {Array.from({ length: 4 }, (_, i) => (
+          <StatCardSkeleton key={i} />
+        ))}
+      </div>
+      <Skeleton className="h-32 rounded-[20px]" />
+      <Skeleton className="h-72 rounded-[20px]" />
+    </LoadingStatus>
+  )
+}
+
 function WalletDetailView({ wallet, currency }: { wallet: WalletDetail; currency: string }) {
   const [editing, setEditing] = useState(false)
   const [moving, setMoving] = useState(false)
@@ -195,7 +218,7 @@ export function WalletDetailPage() {
   return (
     <>
       <DestinationsHeader current={wallet.data?.name ?? 'Wallet'} />
-      <QueryView query={wallet} errorTitle="We could not load this wallet">
+      <QueryView query={wallet} loading={<WalletDetailSkeleton />} errorTitle="We could not load this wallet">
         {(data) => <WalletDetailView wallet={data} currency={currency} />}
       </QueryView>
     </>

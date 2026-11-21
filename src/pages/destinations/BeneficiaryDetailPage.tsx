@@ -8,7 +8,7 @@ import { Button } from '@/components/ui/Button'
 import { Modal } from '@/components/ui/Modal'
 import { Pagination } from '@/components/ui/Pagination'
 import { SearchField } from '@/components/ui/SearchField'
-import { QueryView } from '@/components/ui/states'
+import { LoadingStatus, QueryView, Skeleton, StatCardSkeleton, TableSkeleton } from '@/components/ui/states'
 import { useAccountCurrency } from '@/features/account/useAccountCurrency'
 import { beneficiariesApi, beneficiaryKeys, maskAccountNumber, type BeneficiaryDetail } from '@/features/beneficiaries/api'
 import { BeneficiaryForm } from '@/features/beneficiaries/BeneficiaryForm'
@@ -38,6 +38,7 @@ function Transfers({ id, currency }: { id: string; currency: string }) {
       </div>
       <QueryView
         query={transfers}
+        loading={<TableSkeleton label="Loading transfers" columns={7} />}
         errorTitle="We could not load transfers"
         isEmpty={(d) => d.data.length === 0}
         empty={<p className="py-8 text-center text-sm text-muted">{q ? 'No matching transfers.' : 'No transfers to this beneficiary yet.'}</p>}
@@ -50,6 +51,28 @@ function Transfers({ id, currency }: { id: string; currency: string }) {
         )}
       </QueryView>
     </section>
+  )
+}
+
+function BeneficiaryDetailSkeleton() {
+  return (
+    <LoadingStatus label="Loading this beneficiary" className="flex flex-col gap-5">
+      <div className="flex flex-wrap items-center justify-between gap-3">
+        <Skeleton className="h-6 w-48" />
+        <div className="flex gap-2">
+          <Skeleton className="h-11 w-24 rounded-xl" />
+          <Skeleton className="h-11 w-24 rounded-xl" />
+          <Skeleton className="h-11 w-28 rounded-xl" />
+        </div>
+      </div>
+      <div className="grid gap-4 lg:grid-cols-[minmax(0,1fr)_minmax(0,2fr)]">
+        <div className="flex flex-col gap-4">
+          <StatCardSkeleton />
+          <Skeleton className="h-56 rounded-[20px]" />
+        </div>
+        <Skeleton className="h-80 rounded-[20px]" />
+      </div>
+    </LoadingStatus>
   )
 }
 
@@ -171,7 +194,7 @@ export function BeneficiaryDetailPage() {
   return (
     <>
       <DestinationsHeader current={beneficiary.data?.accountName ?? 'Beneficiary'} />
-      <QueryView query={beneficiary} errorTitle="We could not load this beneficiary">
+      <QueryView query={beneficiary} loading={<BeneficiaryDetailSkeleton />} errorTitle="We could not load this beneficiary">
         {(data) => <BeneficiaryView beneficiary={data} currency={currency} />}
       </QueryView>
     </>

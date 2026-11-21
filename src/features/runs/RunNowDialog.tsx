@@ -5,7 +5,7 @@ import { errorMessage } from '@/api/errors'
 import { Alert } from '@/components/ui/Alert'
 import { Button } from '@/components/ui/Button'
 import { Modal } from '@/components/ui/Modal'
-import { LoadingBlock } from '@/components/ui/states'
+import { ListSkeleton } from '@/components/ui/states'
 import { dashboardApi, dashboardKeys } from '@/features/dashboard/api'
 import { ruleDestinationName, rulesApi } from '@/features/rules/api'
 import { ruleValueLabel } from '@/features/rules/format'
@@ -82,7 +82,7 @@ function RunNowDialog({ currency, balance, onClose }: { currency: string; balanc
             Available to split: <strong>{formatMoney(balance, currency)}</strong>
           </p>
           {rules.isPending ? (
-            <LoadingBlock label="Loading your rules" rows={2} />
+            <ListSkeleton label="Loading your rules" rows={2} />
           ) : rules.isError ? (
             <Alert tone="error">{errorMessage(rules.error)}</Alert>
           ) : ordered.length === 0 ? (

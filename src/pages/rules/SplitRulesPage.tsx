@@ -10,7 +10,7 @@ import { Modal } from '@/components/ui/Modal'
 import { Pagination } from '@/components/ui/Pagination'
 import { SearchField } from '@/components/ui/SearchField'
 import { SegmentedControl } from '@/components/ui/SegmentedControl'
-import { EmptyState, QueryView } from '@/components/ui/states'
+import { EmptyState, FormSkeleton, ListSkeleton, LoadingStatus, QueryView, Skeleton, TableSkeleton } from '@/components/ui/states'
 import { useAccountCurrency } from '@/features/account/useAccountCurrency'
 import { ruleDestinationName, ruleKeys, rulesApi, type DestinationType, type RulesSummary, type SplitRule } from '@/features/rules/api'
 import { ruleValueLabel } from '@/features/rules/format'
@@ -22,6 +22,28 @@ import { formatMoney } from '@/lib/money'
 import { usePageTitle } from '@/lib/usePageTitle'
 
 const SEGMENT_COLOURS = ['#33a7f5', '#2dd4bf', '#171918', '#0f324a', '#1e3a8a', '#5cb9f7', '#7c3aed', '#a3510a']
+
+function SummarySkeleton() {
+  return (
+    <LoadingStatus
+      label="Loading your allocation summary"
+      className="flex flex-col gap-4 rounded-[20px] bg-gradient-to-b from-[#eaf6ff] to-surface p-5"
+    >
+      <div className="flex flex-wrap items-end justify-between gap-4">
+        <div className="flex flex-col gap-2">
+          <Skeleton className="h-3 w-36" />
+          <Skeleton className="h-9 w-48" />
+        </div>
+        <div className="flex gap-6">
+          <Skeleton className="h-10 w-24" />
+          <Skeleton className="h-10 w-24" />
+        </div>
+      </div>
+      <Skeleton className="h-3 w-full rounded-full" />
+      <Skeleton className="h-4 w-2/3" />
+    </LoadingStatus>
+  )
+}
 
 function SummaryCard({ summary, currency }: { summary: RulesSummary; currency: string }) {
   const money = (v: number) => formatMoney(v, currency, undefined, { trimZeroMinor: true })
@@ -172,6 +194,7 @@ function RulesTable({ currency }: { currency: string }) {
       )}
       <QueryView
         query={list}
+        loading={<TableSkeleton label="Loading your rules" columns={7} rows={4} />}
         errorTitle="We could not load your rules"
         isEmpty={(d) => d.data.length === 0}
         empty={
@@ -277,6 +300,7 @@ function SplitHistory({ currency }: { currency: string }) {
       </h2>
       <QueryView
         query={runs}
+        loading={<ListSkeleton label="Loading your split history" rows={3} />}
         errorTitle="We could not load your split history"
         isEmpty={(d) => d.data.length === 0}
         empty={<p className="py-8 text-center text-sm text-muted">No splits have run yet. Your first split runs when your salary arrives.</p>}
@@ -313,7 +337,7 @@ function EditRuleModal({ ruleId, currency, onClose }: { ruleId: string; currency
   const rule = useQuery({ queryKey: ruleKeys.detail(ruleId), queryFn: () => rulesApi.get(ruleId) })
   return (
     <Modal open onOpenChange={(open) => !open && onClose()} title="Reconfigure Split Rule">
-      <QueryView query={rule} errorTitle="We could not load this rule">
+      <QueryView query={rule} loading={<FormSkeleton label="Loading this rule" fields={5} />} errorTitle="We could not load this rule">
         {(data) => <RuleForm currency={currency} rule={data} onSaved={onClose} />}
       </QueryView>
     </Modal>
@@ -365,7 +389,7 @@ export function SplitRulesPage() {
       </header>
 
       <div className="flex flex-col gap-5 rounded-[32px] border border-line bg-surface p-3 sm:p-4">
-        <QueryView query={summary} errorTitle="We could not load your allocation summary" loading={<div className="h-40 animate-pulse rounded-[20px] bg-line/60" />}>
+        <QueryView query={summary} errorTitle="We could not load your allocation summary" loading={<SummarySkeleton />}>
           {(data) => <SummaryCard summary={data} currency={currency} />}
         </QueryView>
         <RulesTable currency={currency} />

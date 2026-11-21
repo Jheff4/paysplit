@@ -4,7 +4,7 @@ import { Dialog } from 'radix-ui'
 import { Link } from 'react-router'
 import { Alert } from '@/components/ui/Alert'
 import { Button } from '@/components/ui/Button'
-import { QueryView } from '@/components/ui/states'
+import { DetailSkeleton, QueryView } from '@/components/ui/states'
 import { formatDateTime } from '@/lib/dates'
 import { formatMoney } from '@/lib/money'
 import { transactionKeys, transactionsApi, type TransactionDetail } from './api'
@@ -93,7 +93,7 @@ export function TransactionSheet({ id, currency, onClose }: { id: string; curren
             </Dialog.Close>
           </div>
           <div className="flex-1 overflow-y-auto p-5">
-            <QueryView query={tx} errorTitle="We could not load this transaction">
+            <QueryView query={tx} loading={<DetailSkeleton label="Loading this transaction" />} errorTitle="We could not load this transaction">
               {(data) => <Receipt tx={data} currency={currency} />}
             </QueryView>
           </div>

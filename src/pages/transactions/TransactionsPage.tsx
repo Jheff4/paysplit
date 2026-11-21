@@ -8,7 +8,7 @@ import { Button } from '@/components/ui/Button'
 import { Pagination } from '@/components/ui/Pagination'
 import { SearchField } from '@/components/ui/SearchField'
 import { SegmentedControl } from '@/components/ui/SegmentedControl'
-import { EmptyState, QueryView } from '@/components/ui/states'
+import { EmptyState, QueryView, TableSkeleton } from '@/components/ui/states'
 import { useAccountCurrency } from '@/features/account/useAccountCurrency'
 import { downloadText, transactionKeys, transactionsApi, type TransactionFilters } from '@/features/transactions/api'
 import { dateRangeProblem, EMPTY_FILTERS, statementFilename } from '@/features/transactions/filters'
@@ -164,6 +164,7 @@ export function TransactionsPage() {
 
         <QueryView
           query={list}
+          loading={<TableSkeleton label="Loading your transactions" columns={7} rows={8} />}
           errorTitle="We could not load your transactions"
           isEmpty={(d) => d.data.length === 0}
           empty={

@@ -200,3 +200,41 @@ describe('settings', () => {
     expect(tokenStore.get()).toBe('fresh-token')
   })
 })
+
+describe('loading', () => {
+  test('while transactions load, a placeholder is announced to screen readers, then replaced by the rows', async () => {
+    let release!: () => void
+    const gate = new Promise<void>((resolve) => (release = resolve))
+    server.use(
+      http.get(apiUrl('/transactions'), async () => {
+        await gate
+        return HttpResponse.json({ data: [tx], pagination: { total: 1, page: 1, limit: 10, pages: 1 } })
+      }),
+    )
+    renderRoute('/transactions')
+
+    expect(await screen.findByText('Loading your transactions')).toBeInTheDocument()
+    expect(screen.queryByText('Transfer to Ada Obi')).not.toBeInTheDocument()
+
+    release()
+    expect((await screen.findAllByText('Transfer to Ada Obi')).length).toBeGreaterThan(0)
+    expect(screen.queryByText('Loading your transactions')).not.toBeInTheDocument()
+  })
+
+  test('pointing at the Transactions link starts loading its data before the click', async () => {
+    const requested = vi.fn()
+    server.use(
+      http.get(apiUrl('/transactions'), ({ request }) => {
+        if (new URL(request.url).searchParams.has('page')) requested()
+        return HttpResponse.json(emptyPage)
+      }),
+    )
+    renderRoute('/')
+    const user = userEvent.setup()
+    const link = await screen.findByRole('link', { name: 'Transactions' })
+    expect(requested).not.toHaveBeenCalled()
+
+    await user.hover(link)
+    await waitFor(() => expect(requested).toHaveBeenCalledTimes(1))
+  })
+})

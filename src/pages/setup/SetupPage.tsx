@@ -4,7 +4,7 @@ import { useState } from 'react'
 import { useNavigate } from 'react-router'
 import type { Onboarding } from '@/api/types'
 import { Button } from '@/components/ui/Button'
-import { QueryView } from '@/components/ui/states'
+import { FormSkeleton, QueryView } from '@/components/ui/states'
 import { useAccountCurrency } from '@/features/account/useAccountCurrency'
 import { BeneficiaryForm } from '@/features/beneficiaries/BeneficiaryForm'
 import { setupApi, setupKeys } from '@/features/setup/api'
@@ -95,7 +95,7 @@ function Wizard({ onboarding }: { onboarding: Onboarding }) {
       {step === 'income' && (
         <section className="flex flex-col gap-4">
           <StepHeading title="Salary Income Source" description="Tell us where your salary comes from and when it usually lands." />
-          <QueryView query={income} errorTitle="We could not load your income">
+          <QueryView query={income} loading={<FormSkeleton label="Loading your income" fields={4} />} errorTitle="We could not load your income">
             {(data) => <IncomeForm currency={currency} income={data.income} submitLabel="Next" secondary={skipButton} onSaved={next} />}
           </QueryView>
         </section>

@@ -1,4 +1,5 @@
 import type { RouteObject } from 'react-router'
+import { InitialLoading } from '@/components/NavigationProgress'
 import { NotFoundPage, RouteErrorPage } from '@/pages/system'
 import { PublicOnly } from './guards'
 import { PublicLayout } from './PublicLayout'
@@ -6,6 +7,7 @@ import { PublicLayout } from './PublicLayout'
 export const routes: RouteObject[] = [
   {
     errorElement: <RouteErrorPage />,
+    hydrateFallbackElement: <InitialLoading />,
     children: [
       {
         element: (

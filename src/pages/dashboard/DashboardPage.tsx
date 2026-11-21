@@ -1,5 +1,6 @@
 import { useQuery } from '@tanstack/react-query'
-import { QueryView, Skeleton } from '@/components/ui/states'
+import type { ReactNode } from 'react'
+import { LoadingStatus, QueryView, Skeleton } from '@/components/ui/states'
 import { dashboardApi, dashboardKeys } from '@/features/dashboard/api'
 import { CashFlowCard } from '@/features/dashboard/CashFlowCard'
 import { Hero } from '@/features/dashboard/Hero'
@@ -8,19 +9,51 @@ import { OnboardingBanner } from '@/features/dashboard/Onboarding'
 import { PartitionCard } from '@/features/dashboard/PartitionCard'
 import { RecentActivity } from '@/features/dashboard/RecentActivity'
 import { WalletsCard } from '@/features/dashboard/WalletsCard'
+import { cn } from '@/lib/cn'
 import { usePageTitle } from '@/lib/usePageTitle'
+
+function PanelSkeleton({ className, children }: { className?: string; children: ReactNode }) {
+  return (
+    <div className={cn('flex flex-col gap-4 rounded-[20px] border border-line bg-surface p-5', className)}>
+      {children}
+    </div>
+  )
+}
 
 function DashboardSkeleton() {
   return (
-    <div role="status" aria-live="polite" className="flex flex-col gap-4">
-      <span className="sr-only">Loading your dashboard</span>
-      <div className="grid gap-4 lg:grid-cols-4">
-        {Array.from({ length: 4 }, (_, i) => (
-          <Skeleton key={i} className="h-40" />
-        ))}
+    <LoadingStatus label="Loading your dashboard" className="flex flex-col gap-6">
+      <div className="grid gap-4 xl:grid-cols-[minmax(0,1fr)_minmax(0,3fr)]">
+        <div className="flex flex-col justify-end gap-3 py-2">
+          <Skeleton className="h-5 w-48" />
+          <Skeleton className="h-12 w-56" />
+          <Skeleton className="h-4 w-64 max-w-full" />
+        </div>
+        <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-3">
+          {Array.from({ length: 3 }, (_, i) => (
+            <div
+              key={i}
+              className="flex min-h-[168px] flex-col justify-between rounded-[20px] bg-gradient-to-b from-[#eaf6ff] to-surface p-5 shadow-xs"
+            >
+              <Skeleton className="h-5 w-32" />
+              <Skeleton className="h-8 w-40" />
+              <Skeleton className="h-4 w-36" />
+            </div>
+          ))}
+        </div>
       </div>
-      <Skeleton className="h-80" />
-    </div>
+      <div className="grid gap-4 rounded-[32px] border border-line bg-surface p-3 sm:p-4 xl:grid-cols-[minmax(0,2fr)_minmax(0,1fr)]">
+        <PanelSkeleton>
+          <Skeleton className="h-5 w-28" />
+          <Skeleton className="h-9 w-48" />
+          <Skeleton className="h-72 w-full" />
+        </PanelSkeleton>
+        <PanelSkeleton className="items-center">
+          <Skeleton className="h-5 w-40 self-start" />
+          <Skeleton className="aspect-square w-full max-w-[220px] rounded-full" />
+        </PanelSkeleton>
+      </div>
+    </LoadingStatus>
   )
 }
 

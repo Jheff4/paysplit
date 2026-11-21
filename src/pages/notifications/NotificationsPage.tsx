@@ -6,7 +6,7 @@ import { Alert } from '@/components/ui/Alert'
 import { Button } from '@/components/ui/Button'
 import { PageHeader } from '@/components/ui/PageHeader'
 import { SegmentedControl } from '@/components/ui/SegmentedControl'
-import { EmptyState, QueryView } from '@/components/ui/states'
+import { EmptyState, ListSkeleton, QueryView } from '@/components/ui/states'
 import { isUnread, notificationKeys, notificationsApi } from '@/features/notifications/api'
 import { cn } from '@/lib/cn'
 import { formatDateTime } from '@/lib/dates'
@@ -67,6 +67,7 @@ export function NotificationsPage() {
       )}
       <QueryView
         query={feed}
+        loading={<ListSkeleton label="Loading your notifications" rows={5} />}
         errorTitle="We could not load your notifications"
         isEmpty={(data) => data.data.length === 0}
         empty={
