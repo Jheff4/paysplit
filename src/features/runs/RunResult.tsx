@@ -13,7 +13,8 @@ function tone(status: string): 'success' | 'warning' | 'error' | 'info' {
 }
 
 export function RunResult({ run, currency, showLink = false }: { run: SplitRun; currency: string; showLink?: boolean }) {
-  const cur = run.currency ?? currency
+  const cur = currency
+  const left = run.availableAmount - run.toWallets - run.toBeneficiaries - run.fees
   const money = (v: number | undefined) => (typeof v === 'number' ? formatMoney(v, cur) : '–')
   const skipped = run.skipped ?? []
 
@@ -26,10 +27,10 @@ export function RunResult({ run, currency, showLink = false }: { run: SplitRun; 
       </Alert>
       <dl className="grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
         {[
-          ['Salary used', run.salaryAmount ?? run.amountSplit],
+          ['Salary used', run.baseAmount],
           ['To wallets', run.toWallets],
           ['To beneficiaries', run.toBeneficiaries],
-          ['Left in salary account', run.remaining],
+          ['Left in salary account', left],
         ].map(([label, value]) => (
           <div key={label as string} className="rounded-xl border border-line p-4">
             <dt className="text-xs text-muted">{label}</dt>

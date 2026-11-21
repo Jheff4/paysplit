@@ -81,11 +81,13 @@ export type Transaction = {
   amount: number
   signedAmount: number
   currency?: string
-  description?: string | null
+  title?: string | null
+  fee?: number
   narration?: string | null
-  destinationName?: string | null
-  category?: string | null
+  destination?: { type: string; id: string | null; name: string } | null
+  category?: { id: string; name: string; slug: string } | null
   createdAt: string
+  completedAt?: string | null
 }
 
 export type NotificationItem = {
@@ -95,7 +97,8 @@ export type NotificationItem = {
   message?: string | null
   type?: string
   readAt?: string | null
-  isRead?: boolean
+  read?: boolean
+  data?: Record<string, unknown> | null
   createdAt: string
 }
 

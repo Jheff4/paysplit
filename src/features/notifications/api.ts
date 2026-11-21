@@ -16,6 +16,6 @@ export const notificationsApi = {
 }
 
 export function isUnread(item: NotificationItem) {
-  if (item.isRead !== undefined) return !item.isRead
+  if (item.read !== undefined) return !item.read
   return !item.readAt
 }

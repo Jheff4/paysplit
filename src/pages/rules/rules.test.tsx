@@ -145,10 +145,11 @@ test('Run Now reviews rules in priority order, then shows what ran and what was 
         status: 'partially_completed',
         trigger: 'manual',
         createdAt: '2026-11-19T09:00:00Z',
-        salaryAmount: 60_000_000,
+        baseAmount: 60_000_000,
+        availableAmount: 60_000_000,
         toWallets: 0,
         toBeneficiaries: 7_500_000,
-        remaining: 52_500_000,
+        fees: 0,
         skipped: [{ ruleName: 'Rent', reason: 'insufficient_funds', requested: 56_250_000, available: 52_500_000 }],
       }),
     ),
@@ -171,6 +172,39 @@ test('Run Now reviews rules in priority order, then shows what ran and what was 
   await user.click(within(dialog).getByRole('button', { name: 'Run split now' }))
   expect(await within(dialog).findByText('Partially completed')).toBeInTheDocument()
   expect(within(dialog).getByText(/Needed ₦562,500.00, ₦525,000.00 was left/)).toBeInTheDocument()
+  expect(within(dialog).getByText('Salary used').nextSibling).toHaveTextContent('₦600,000.00')
+  expect(within(dialog).getByText('Left in salary account').nextSibling).toHaveTextContent('₦525,000.00')
+})
+
+test('split history shows how much salary each split used', async () => {
+  mockRulesPage({ account: 'active' })
+  server.use(
+    http.get(apiUrl('/split-runs'), () =>
+      HttpResponse.json({
+        data: [
+          {
+            id: 'run9',
+            trigger: 'auto',
+            status: 'completed',
+            baseAmount: 85_000_000,
+            availableAmount: 85_000_000,
+            toWallets: 28_500_000,
+            toBeneficiaries: 0,
+            fees: 0,
+            skipped: [],
+            creditTransactionId: 't9',
+            createdAt: '2026-11-21T09:58:00Z',
+            completedAt: '2026-11-21T09:58:02Z',
+          },
+        ],
+        pagination: { total: 1, page: 1, limit: 10, pages: 1 },
+      }),
+    ),
+  )
+  renderRoute('/split-rules')
+  const history = await screen.findByRole('region', { name: 'Split History' })
+  expect(await within(history).findByText('₦850,000.00')).toBeInTheDocument()
+  expect(within(history).getByText('Automatic split')).toBeInTheDocument()
 })
 
 test('pausing a rule sends the new status', async () => {

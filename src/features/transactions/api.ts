@@ -10,16 +10,11 @@ export type TransactionFilters = {
 }
 
 export type TransactionDetail = Transaction & {
-  destinationType?: string | null
-  source?: string | null
-  sourceName?: string | null
+  recipient?: { name: string; type: string; bankName: string | null; maskedAccountNumber: string | null } | null
   providerReference?: string | null
   settlementReference?: string | null
-  fee?: number | null
+  splitRuleId?: string | null
   failureReason?: string | null
-  ruleName?: string | null
-  splitRunId?: string | null
-  completedAt?: string | null
 }
 
 export const transactionKeys = {

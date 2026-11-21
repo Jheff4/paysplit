@@ -316,7 +316,7 @@ function SplitHistory({ currency }: { currency: string }) {
                     </span>
                     <span className="text-right">
                       <span className="block font-medium text-ink">
-                        {typeof (run.salaryAmount ?? run.amountSplit) === 'number' ? formatMoney((run.salaryAmount ?? run.amountSplit)!, run.currency ?? currency) : ''}
+                        {formatMoney(run.baseAmount, currency)}
                       </span>
                       <span className="block text-xs text-muted">{runStatusLabel(run.status)}</span>
                     </span>

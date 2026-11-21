@@ -30,7 +30,7 @@ export function TransactionTable({ rows, currency, caption }: { rows: Transactio
               <td className="py-3 font-mono text-xs text-ink">{tx.reference}</td>
               <td className="py-3 text-ink">{txTitle(tx)}</td>
               <td className="py-3">
-                {tx.category && <span className="rounded-lg border border-line px-2.5 py-1 text-xs">{tx.category}</span>}
+                {tx.category && <span className="rounded-lg border border-line px-2.5 py-1 text-xs">{tx.category.name}</span>}
               </td>
               <td className="py-3 text-ink">{formatDateTime(tx.createdAt)}</td>
               <td className="py-3">

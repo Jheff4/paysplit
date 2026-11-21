@@ -17,13 +17,13 @@ export type SplitRun = {
   status: string
   trigger?: string
   createdAt: string
-  salaryAmount?: number
-  amountSplit?: number
-  totalAllocated?: number
-  toWallets?: number
-  toBeneficiaries?: number
-  remaining?: number
-  currency?: string
+  completedAt?: string | null
+  baseAmount: number
+  availableAmount: number
+  toWallets: number
+  toBeneficiaries: number
+  fees: number
+  creditTransactionId?: string | null
   transactions?: Transaction[]
   skipped?: SkippedRule[]
 }

@@ -12,15 +12,19 @@ setupMockApi()
 const tx: Transaction = {
   id: 't1',
   reference: 'PAY-20261119-0001',
-  type: 'beneficiary',
-  direction: 'out',
+  type: 'wallet_allocation',
   status: 'pending',
+  title: 'Rent Wallet',
+  direction: 'out',
   amount: 15_000_000,
   signedAmount: -15_000_000,
+  fee: 0,
   currency: 'NGN',
-  destinationName: 'Transfer to Ada Obi',
-  category: 'Family Support',
+  category: { id: 'c1', name: 'Rent & Housing', slug: 'rent-housing' },
+  destination: { type: 'wallet', id: 'w1', name: 'Rent' },
+  narration: 'Rent',
   createdAt: '2026-11-18T23:30:00Z',
+  completedAt: null,
 }
 
 beforeEach(() => {
@@ -40,7 +44,8 @@ describe('transactions', () => {
     renderRoute('/transactions')
     const user = userEvent.setup()
 
-    expect((await screen.findAllByText('Transfer to Ada Obi')).length).toBeGreaterThan(0)
+    expect((await screen.findAllByText('Rent Wallet')).length).toBeGreaterThan(0)
+    expect(screen.getByText('Rent & Housing')).toBeInTheDocument()
     expect(screen.getAllByText('19 Nov 2026, 12:30 am').length).toBeGreaterThan(0)
     expect(screen.getAllByText('-₦150,000.00').length).toBeGreaterThan(0)
 
@@ -92,6 +97,8 @@ describe('transactions', () => {
     expect(within(sheet).getByText('Not final yet')).toBeInTheDocument()
     expect(within(sheet).getByText(/Please do not treat it as failed/)).toBeInTheDocument()
     expect(within(sheet).getByText('PRV-998')).toBeInTheDocument()
+    expect(within(sheet).getByText('Destination Type').nextSibling).toHaveTextContent('Wallet')
+    expect(within(sheet).getByText('Category').nextSibling).toHaveTextContent('Rent & Housing')
   })
 })
 
@@ -214,10 +221,10 @@ describe('loading', () => {
     renderRoute('/transactions')
 
     expect(await screen.findByText('Loading your transactions')).toBeInTheDocument()
-    expect(screen.queryByText('Transfer to Ada Obi')).not.toBeInTheDocument()
+    expect(screen.queryByText('Rent Wallet')).not.toBeInTheDocument()
 
     release()
-    expect((await screen.findAllByText('Transfer to Ada Obi')).length).toBeGreaterThan(0)
+    expect((await screen.findAllByText('Rent Wallet')).length).toBeGreaterThan(0)
     expect(screen.queryByText('Loading your transactions')).not.toBeInTheDocument()
   })
 

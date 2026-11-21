@@ -112,10 +112,10 @@ The API contract is treated as the source of truth (Project Scope, section 8). W
 
 | # | PRD | API (checked) | What the app does |
 |---|---|---|---|
-| 1 | Percentage rules use the original salary (FR-15) | Run Now applies percentages to the balance at run time | The preview is labelled as based on your monthly salary; Run Now says PaySplit confirms final amounts |
+| 1 | Percentage rules use the original salary (FR-15) | Run Now applies percentages to the balance at run time (tested live: 10% of a ₦565,000 balance moved ₦56,500) | The preview is labelled as based on your monthly salary; Run Now says PaySplit confirms final amounts |
 | 2 | Draft rules allowed before KYC (FR-06) | `POST /split-rules` returns `KYC_REQUIRED`, even with `status: paused` (tested live) | Rule creation explains it unlocks after verification, instead of a form that fails |
 | 3 | Beneficiaries can be added before KYC (FR-06) | `POST /beneficiaries/resolve` returns `KYC_REQUIRED` for unverified users (tested live) | The lookup shows the reason and saving stays blocked |
-| 4 | Fees shown when moving money (FR-11) | No fee in any response | No fee is shown; nothing is invented |
+| 4 | Fees shown before moving money (FR-11) | Transactions carry `fee` and split runs `fees` after the fact (₦0 in the sandbox); there is no fee quote before a move | The receipt shows the fee; nothing is quoted in advance or invented |
 | 5 | PDF statements | CSV export only | CSV download plus printable statement and receipt (Save as PDF) |
 | 6 | Wallet description, beneficiary name field | Not in the API; the name comes from bank lookup | Built to the API; the resolved name must show before saving |
 | 7 | Admin dashboard | Admin endpoints exist | Out of scope for the Frontend role brief |
@@ -132,5 +132,6 @@ The API contract is treated as the source of truth (Project Scope, section 8). W
 
 ## Known limits
 
-- The demo account is not KYC-verified, so transaction, notification, rule and split-run responses could not be observed live. Their types follow the PRD and API docs and are rendered defensively. They need confirming with a verified account and a simulated salary credit (`POST /salary-account/simulate-credit`).
+- **Verified live with a throwaway account:** KYC through the app's own screens (Dojah's published sandbox BVN and a generated selfie), salary income, wallets, a fixed and a percentage rule, a simulated salary credit with its automatic split, Run Now, transactions, receipts and notifications. The API types follow those real responses. This caught a crash: transaction categories arrive as objects, not text.
+- **Not observed live:** beneficiary transfers (no sandbox bank account for the name lookup was found), skipped rules and failed transactions. Those are typed from the API docs and rendered defensively.
 - End-to-end tests cover the public pages. Signed-in journeys are covered by component tests against a fake API, plus manual axe scans.
