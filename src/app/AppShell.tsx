@@ -139,40 +139,42 @@ export function AppShell() {
         Skip to content
       </a>
 
-      <header className="sticky top-0 z-30 flex h-[63px] items-center justify-between border-b border-line bg-surface px-4 sm:px-9">
-        <Link to="/" aria-label="Paysplit dashboard" className="lg:w-[216px]">
-          <Logo />
-        </Link>
-
-        <nav aria-label="Main" className="hidden h-full lg:block">
-          <ul className="flex h-full items-stretch">
-            {NAV.map(({ to, label, end }) => (
-              <li key={to} className="flex">
-                <NavLink
-                  to={to}
-                  end={end}
-                  onPointerEnter={() => warmRoute(to)}
-                  onFocus={() => warmRoute(to)}
-                  className={({ isActive }) =>
-                    cn(
-                      'flex items-center border-b-4 px-3 pt-1 text-sm text-ink',
-                      isActive ? 'border-brand font-semibold' : 'border-transparent hover:border-line',
-                    )
-                  }
-                >
-                  {label}
-                </NavLink>
-              </li>
-            ))}
-          </ul>
-        </nav>
-
-        <div className="flex items-center justify-end gap-3 lg:w-[216px]">
-          <Link to="/transactions" aria-label="Search transactions" className={cn(iconButtonClass, 'hidden sm:grid')}>
-            <Search aria-hidden="true" className="size-5" />
+      <header className="sticky top-0 z-30 border-b border-line bg-surface">
+        <div className="mx-auto flex h-[63px] w-full max-w-[1440px] items-center justify-between px-4 sm:px-9">
+          <Link to="/" aria-label="Paysplit dashboard" className="lg:w-[216px]">
+            <Logo />
           </Link>
-          <NotificationsLink />
-          <ProfileMenu onSignOut={() => setSignOutOpen(true)} />
+
+          <nav aria-label="Main" className="hidden h-full lg:block">
+            <ul className="flex h-full items-stretch">
+              {NAV.map(({ to, label, end }) => (
+                <li key={to} className="flex">
+                  <NavLink
+                    to={to}
+                    end={end}
+                    onPointerEnter={() => warmRoute(to)}
+                    onFocus={() => warmRoute(to)}
+                    className={({ isActive }) =>
+                      cn(
+                        'flex items-center border-b-4 px-3 pt-1 text-sm text-ink',
+                        isActive ? 'border-brand font-semibold' : 'border-transparent hover:border-line',
+                      )
+                    }
+                  >
+                    {label}
+                  </NavLink>
+                </li>
+              ))}
+            </ul>
+          </nav>
+
+          <div className="flex items-center justify-end gap-3 lg:w-[216px]">
+            <Link to="/transactions" aria-label="Search transactions" className={cn(iconButtonClass, 'hidden sm:grid')}>
+              <Search aria-hidden="true" className="size-5" />
+            </Link>
+            <NotificationsLink />
+            <ProfileMenu onSignOut={() => setSignOutOpen(true)} />
+          </div>
         </div>
       </header>
 
