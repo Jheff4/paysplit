@@ -145,6 +145,52 @@ describe('settings', () => {
     )
   })
 
+  describe('salary account that needs a BVN or NIN', () => {
+    const needsId = { ...profile, salaryAccount: { ...profile.salaryAccount, status: 'failed' as const, actionRequired: 'add_bvn_or_nin' } }
+
+    test('checks the number before sending, sends the chosen method, then shows the account is being opened', async () => {
+      let sent: unknown
+      server.use(
+        http.get(apiUrl('/users/me/profile'), () => HttpResponse.json(needsId)),
+        http.post(apiUrl('/salary-account/identity'), async ({ request }) => {
+          sent = await request.json()
+          return HttpResponse.json({ ...needsId.salaryAccount, status: 'pending', actionRequired: null })
+        }),
+      )
+      renderRoute('/settings')
+      const user = userEvent.setup()
+
+      const panel = (await screen.findByRole('heading', { name: 'Account Details' })).closest('section')!
+      expect(within(panel).queryByRole('link', { name: 'Verify your identity' })).not.toBeInTheDocument()
+      await user.click(within(panel).getByRole('radio', { name: 'National ID (NIN)' }))
+      await user.type(within(panel).getByLabelText('National Identification Number (NIN)'), '7012345')
+      await user.click(within(panel).getByRole('button', { name: 'Add and open my account' }))
+      expect(await within(panel).findByText('Your NIN is 11 digits.')).toBeInTheDocument()
+      expect(sent).toBeUndefined()
+
+      await user.type(within(panel).getByLabelText('National Identification Number (NIN)'), '6789')
+      await user.click(within(panel).getByRole('button', { name: 'Add and open my account' }))
+      expect(await within(panel).findByText(/Your salary account is being opened/)).toBeInTheDocument()
+      expect(sent).toEqual({ method: 'nin', idNumber: '70123456789' })
+    })
+
+    test('a name that does not match the verified identity is explained', async () => {
+      server.use(
+        http.get(apiUrl('/users/me/profile'), () => HttpResponse.json(needsId)),
+        http.post(apiUrl('/salary-account/identity'), () =>
+          HttpResponse.json({ statusCode: 422, code: 'NAME_MISMATCH', message: 'Name mismatch' }, { status: 422 }),
+        ),
+      )
+      renderRoute('/settings')
+      const user = userEvent.setup()
+
+      const panel = (await screen.findByRole('heading', { name: 'Account Details' })).closest('section')!
+      await user.type(within(panel).getByLabelText('Bank Verification Number (BVN)'), '22222222222')
+      await user.click(within(panel).getByRole('button', { name: 'Add and open my account' }))
+      expect(await within(panel).findByText('The name on this record does not match your PaySplit name.')).toBeInTheDocument()
+    })
+  })
+
   test('verified names are locked and say why; email is read-only', async () => {
     renderRoute('/settings')
     const first = await screen.findByLabelText('First name')

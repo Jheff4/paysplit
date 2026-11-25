@@ -17,6 +17,7 @@ import { accessTokenFrom } from '@/features/auth/api'
 import { PasswordField } from '@/features/auth/PasswordField'
 import { passwordSchema } from '@/features/auth/schemas'
 import { tokenStore } from '@/features/auth/tokenStore'
+import { SalaryAccountIdForm } from '@/features/salary/SalaryAccountIdForm'
 import { cn } from '@/lib/cn'
 import { formatDate } from '@/lib/dates'
 import { PHOTO_MAX_BYTES, PHOTO_TYPES, settingsApi, settingsKeys, type Channel, type Profile, type Topic } from './api'
@@ -153,6 +154,8 @@ export function AccountDetails({ profile }: { profile: Profile }) {
             <dd className="text-ink">{account.bankName ?? account.accounts[0]?.bankName}</dd>
           </div>
         </dl>
+      ) : account.actionRequired === 'add_bvn_or_nin' ? (
+        <SalaryAccountIdForm />
       ) : (
         <p className="text-sm text-muted">
           {account.status === 'pending'
