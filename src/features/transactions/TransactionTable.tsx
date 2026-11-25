@@ -6,10 +6,20 @@ import { formatDateTime } from '@/lib/dates'
 import { signedMoney, txTitle } from './format'
 import { StatusBadge } from './StatusBadge'
 
-export function TransactionTable({ rows, currency, caption }: { rows: Transaction[]; currency: string; caption: string }) {
+export function TransactionTable({
+  rows,
+  currency,
+  caption,
+  compact = false,
+}: {
+  rows: Transaction[]
+  currency: string
+  caption: string
+  compact?: boolean
+}) {
   return (
     <>
-      <table className="hidden w-full text-left text-sm md:table">
+      <table className={cn('hidden w-full text-left text-sm', !compact && 'md:table')}>
         <caption className="sr-only">{caption}</caption>
         <thead className="text-xs text-muted">
           <tr className="border-b border-line">
@@ -52,7 +62,7 @@ export function TransactionTable({ rows, currency, caption }: { rows: Transactio
           ))}
         </tbody>
       </table>
-      <ul className="flex flex-col gap-2 md:hidden" aria-label={caption}>
+      <ul className={cn('flex flex-col gap-2', !compact && 'md:hidden')} aria-label={caption}>
         {rows.map((tx) => (
           <li key={tx.id}>
             <Link to={`/transactions/${tx.id}`} className="flex items-center justify-between gap-3 rounded-xl border border-line p-3">

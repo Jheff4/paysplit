@@ -106,3 +106,75 @@ test('notifications can be marked read and the bell shows the unread count', asy
   expect(await screen.findByRole('link', { name: 'Notifications' })).toBeInTheDocument()
   expect(screen.queryByText('Unread:')).not.toBeInTheDocument()
 })
+
+describe('simulated salary payment (sandbox)', () => {
+  const active = (income = true) =>
+    summary({
+      salaryAccount: { ...summary().salaryAccount, status: 'active', accountNumber: '0123456789', maskedAccountNumber: '****6789', balance: 0 },
+      income: income ? { employerName: 'Acme Ltd', monthlyAmount: 85_000_000, paydayDay: 25 } : null,
+    })
+  const splitRun = {
+    id: 'run1',
+    trigger: 'auto',
+    status: 'completed',
+    baseAmount: 85_000_000,
+    availableAmount: 85_000_000,
+    toWallets: 28_500_000,
+    toBeneficiaries: 0,
+    fees: 0,
+    skipped: [],
+    creditTransactionId: 't1',
+    createdAt: '2026-11-21T09:58:00Z',
+    completedAt: '2026-11-21T09:58:02Z',
+    transactions: [],
+  }
+
+  test('sends the expected salary in kobo and shows the split it triggered', async () => {
+    mockDashboard(active())
+    let sent: unknown
+    server.use(
+      http.post(apiUrl('/salary-account/simulate-credit'), async ({ request }) => {
+        sent = await request.json()
+        return HttpResponse.json({ transaction: { id: 't1' }, autoSplit: true, splitRun }, { status: 201 })
+      }),
+    )
+    renderRoute('/')
+    const user = userEvent.setup()
+
+    await user.click(await screen.findByRole('button', { name: /Simulate salary payment/ }))
+    const dialog = await screen.findByRole('dialog', { name: 'Simulate salary payment' })
+    expect(within(dialog).getByLabelText('Amount')).toHaveValue('850000.00')
+
+    await user.click(within(dialog).getByRole('button', { name: 'Send test salary' }))
+    expect(await within(dialog).findByText(/₦850,000.00 arrived in your salary account/)).toBeInTheDocument()
+    expect(sent).toEqual({ amount: 85_000_000, senderName: 'Acme Ltd' })
+    expect(within(dialog).getByText('To wallets').nextSibling).toHaveTextContent('₦285,000.00')
+  })
+
+  test('a payment that is not split automatically says why and points to Run Now', async () => {
+    mockDashboard(active())
+    server.use(
+      http.post(apiUrl('/salary-account/simulate-credit'), () =>
+        HttpResponse.json({ transaction: { id: 't2' }, autoSplit: false, splitRun: null }, { status: 201 }),
+      ),
+    )
+    renderRoute('/')
+    const user = userEvent.setup()
+
+    await user.click(await screen.findByRole('button', { name: /Simulate salary payment/ }))
+    const dialog = await screen.findByRole('dialog', { name: 'Simulate salary payment' })
+    await user.clear(within(dialog).getByLabelText('Amount'))
+    await user.type(within(dialog).getByLabelText('Amount'), '100,000')
+    await user.click(within(dialog).getByRole('button', { name: 'Send test salary' }))
+
+    expect(await within(dialog).findByText(/It was not split automatically/)).toBeInTheDocument()
+    expect(within(dialog).getByRole('link', { name: /Run Now/ })).toHaveAttribute('href', '/split-rules')
+  })
+
+  test('before verification there is no salary account, so no simulation is offered', async () => {
+    mockDashboard(summary())
+    renderRoute('/')
+    expect(await screen.findByText(/No salary account yet/)).toBeInTheDocument()
+    expect(screen.queryByRole('button', { name: /Simulate salary payment/ })).not.toBeInTheDocument()
+  })
+})

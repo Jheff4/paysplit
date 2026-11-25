@@ -66,7 +66,7 @@ function RunNowDialog({ currency, balance, onClose }: { currency: string; balanc
     <Modal open onOpenChange={(open) => !open && !run.isPending && onClose()} title="Run Now" description="Split the money in your salary account now, using your active rules.">
       {run.isSuccess ? (
         <div className="flex flex-col gap-4">
-          <RunResult run={run.data} currency={currency} showLink />
+          <RunResult run={run.data} currency={currency} showLink compact />
           <Button size="lg" onClick={onClose}>
             Done
           </Button>

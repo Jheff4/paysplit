@@ -3,8 +3,18 @@
 PaySplit routes a salary into wallets and transfers automatically, by rules the user sets. This repository is the **web app**: React and TypeScript, built to the PaySplit Figma and running against the provided PaySplit API.
 
 - **Live app:** https://paysplit-bice.vercel.app
-- **Demo video:** _add the link here_
+- **Demo video (4 min):** https://drive.google.com/file/d/1-tN8QwL1EJRF2qBsba079zBnzwJEUoFi/view?usp=sharing
 - **Tool-choice writeup:** [docs/TOOL-CHOICES.md](docs/TOOL-CHOICES.md)
+
+## Try the full flow
+
+A new account is unverified, and the API only opens a salary account, accepts split rules and receives money after identity verification. In this sandbox, verification goes through Dojah's test mode, so you can do all of it:
+
+1. **Sign up** with an email you can read (a 6-digit code is sent to it).
+2. **Verify your identity** (Complete KYC): country Nigeria, any phone number (for example `09011111111`), BVN `22222222222` (Dojah's published sandbox test number), then any clear face photo, either from the camera or by uploading it. Tested on 21 Nov 2026 with an account named John Musa, the name in Dojah's sandbox examples. Other names were not tested, and the API checks that the names match.
+3. **Set up** from the dashboard prompt or **Setup**: your monthly salary, a wallet, and a split rule. Wallets and the salary details work before verification too.
+4. **Simulate salary payment** (dashboard, under the balance, marked Sandbox): it pre-fills your monthly salary and shows the automatic split it triggers.
+5. **Run Now** on Split Rules splits whatever is left in the salary account.
 
 ## Run it
 
@@ -36,6 +46,7 @@ The only setting is `VITE_API_BASE_URL`, the public API base URL. It is not a se
 | Dashboard: balance, next split, recent activity, verification status | `src/pages/dashboard`, `src/features/dashboard` |
 | Split-rule builder: fixed or percentage, priority, over-allocation check | `src/features/rules`, `src/pages/rules` |
 | Run Now with review and result, split history | `src/features/runs` |
+| Simulated salary pay-in (sandbox) with the automatic split it triggers | `src/features/salary` |
 | Wallets and beneficiaries: create, edit, delete, move money back, account-name lookup | `src/pages/destinations`, `src/features/wallets`, `src/features/beneficiaries` |
 | Transactions: filters, detail, printable receipt, CSV statement | `src/pages/transactions`, `src/features/transactions` |
 | Settings and notifications | `src/pages/settings`, `src/pages/notifications` |

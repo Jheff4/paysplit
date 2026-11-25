@@ -1,5 +1,6 @@
 import { Link } from 'react-router'
 import { Alert } from '@/components/ui/Alert'
+import { cn } from '@/lib/cn'
 import { TransactionTable } from '@/features/transactions/TransactionTable'
 import { formatDateTime } from '@/lib/dates'
 import { formatMoney } from '@/lib/money'
@@ -12,7 +13,17 @@ function tone(status: string): 'success' | 'warning' | 'error' | 'info' {
   return 'info'
 }
 
-export function RunResult({ run, currency, showLink = false }: { run: SplitRun; currency: string; showLink?: boolean }) {
+export function RunResult({
+  run,
+  currency,
+  showLink = false,
+  compact = false,
+}: {
+  run: SplitRun
+  currency: string
+  showLink?: boolean
+  compact?: boolean
+}) {
   const cur = currency
   const left = run.availableAmount - run.toWallets - run.toBeneficiaries - run.fees
   const money = (v: number | undefined) => (typeof v === 'number' ? formatMoney(v, cur) : '–')
@@ -25,7 +36,7 @@ export function RunResult({ run, currency, showLink = false }: { run: SplitRun; 
         {formatDateTime(run.createdAt)}
         {['pending', 'processing'].includes(run.status) && '. Some transfers are still being confirmed by the bank.'}
       </Alert>
-      <dl className="grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
+      <dl className={cn('grid gap-3 sm:grid-cols-2', !compact && 'lg:grid-cols-4')}>
         {[
           ['Salary used', run.baseAmount],
           ['To wallets', run.toWallets],
@@ -58,7 +69,7 @@ export function RunResult({ run, currency, showLink = false }: { run: SplitRun; 
         </section>
       )}
       {run.transactions && run.transactions.length > 0 && (
-        <TransactionTable rows={run.transactions} currency={cur} caption="Money moved in this split" />
+        <TransactionTable rows={run.transactions} currency={cur} caption="Money moved in this split" compact={compact} />
       )}
       {showLink && (
         <Link to={`/split-runs/${run.id}`} className="text-sm font-medium text-link underline underline-offset-4">

@@ -1,9 +1,10 @@
-import { ArrowUp, Check, ChevronRight, Copy, Eye, EyeOff, X } from 'lucide-react'
+import { ArrowDownToLine, ArrowUp, Check, ChevronRight, Copy, Eye, EyeOff, X } from 'lucide-react'
 import { Dialog } from 'radix-ui'
 import { useState, type ReactNode } from 'react'
 import { Link } from 'react-router'
-import type { DashboardSummary, SalaryAccount } from '@/api/types'
+import type { DashboardSummary, Income, SalaryAccount } from '@/api/types'
 import { Alert } from '@/components/ui/Alert'
+import { SimulateSalaryDialog } from '@/features/salary/SimulateSalaryDialog'
 import { cn } from '@/lib/cn'
 import { formatDay } from '@/lib/dates'
 import { formatMoney } from '@/lib/money'
@@ -119,8 +120,9 @@ function SalaryAccountNote({ account }: { account: SalaryAccount }) {
   }
 }
 
-export function BalanceCard({ account }: { account: SalaryAccount }) {
+export function BalanceCard({ account, income }: { account: SalaryAccount; income: Income | null }) {
   const [hidden, setHidden] = useState(false)
+  const [simulating, setSimulating] = useState(false)
   const amount = formatMoney(account.balance, account.currency, undefined, { trimZeroMinor: true })
 
   return (
@@ -159,6 +161,16 @@ export function BalanceCard({ account }: { account: SalaryAccount }) {
               View Account Details
             </button>
           </AccountDetailsDialog>
+          <button
+            type="button"
+            onClick={() => setSimulating(true)}
+            className="inline-flex min-h-8 items-center gap-1.5 font-medium text-link underline underline-offset-4"
+          >
+            <ArrowDownToLine aria-hidden="true" className="size-4" />
+            Simulate salary payment
+            <span className="inline-block rounded-full bg-chip px-2 py-0.5 text-xs font-normal text-muted">Sandbox</span>
+          </button>
+          <SimulateSalaryDialog currency={account.currency} income={income} open={simulating} onOpenChange={setSimulating} />
         </p>
       ) : (
         <SalaryAccountNote account={account} />

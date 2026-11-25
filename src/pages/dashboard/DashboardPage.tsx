@@ -73,7 +73,7 @@ export function DashboardPage() {
             <div className="flex flex-col gap-6">
               {onboardingIncomplete && <OnboardingBanner onboarding={data.onboarding} />}
               <div className="grid gap-4 xl:grid-cols-[minmax(0,1fr)_minmax(0,3fr)]">
-                <BalanceCard account={data.salaryAccount} />
+                <BalanceCard account={data.salaryAccount} income={data.income} />
                 <MetricCards summary={data} />
               </div>
               <div className="grid gap-4 rounded-[32px] border border-line bg-surface p-3 sm:p-4 xl:grid-cols-[minmax(0,2fr)_minmax(0,1fr)]">

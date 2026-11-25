@@ -30,6 +30,7 @@ const MESSAGES: Record<string, string> = {
   ATTEMPTS_EXCEEDED: 'You have reached the daily limit for attempts. Please try again tomorrow.',
   PROVIDER_UNAVAILABLE: 'Our verification partner is unavailable right now. Please try again shortly.',
   KYC_REQUIRED: 'Complete identity verification to do this.',
+  SIMULATION_DISABLED: 'Test salary payments are turned off on this server.',
 }
 
 export function errorMessage(error: unknown): string {
