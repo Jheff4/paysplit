@@ -1,5 +1,5 @@
 import { zodResolver } from '@hookform/resolvers/zod'
-import { useMutation, useQueryClient } from '@tanstack/react-query'
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 import { Check } from 'lucide-react'
 import { RadioGroup } from 'radix-ui'
 import { useState, type ReactNode } from 'react'
@@ -13,7 +13,7 @@ import { Checkbox } from '@/components/ui/Checkbox'
 import { TextField } from '@/components/ui/TextField'
 import { minorToInputString } from '@/lib/money'
 import { moneyText, toMinor } from '@/lib/moneyField'
-import { ACCENTS, walletsApi, type Wallet, type WalletDetail } from './api'
+import { accentKeys, walletsApi, type Wallet, type WalletDetail } from './api'
 import { CategorySelect } from './CategorySelect'
 
 export type SaveIntent = 'save' | 'rule'
@@ -32,12 +32,14 @@ export function WalletForm({
   onSaved: (wallet: Wallet, intent: SaveIntent) => void
 }) {
   const queryClient = useQueryClient()
+  const colors = useQuery({ queryKey: accentKeys.all, queryFn: walletsApi.accentColors, staleTime: Infinity })
+  const defaultColor = colors.data?.[0]?.key ?? ''
   const [intent, setIntent] = useState<SaveIntent>('save')
   const schema = z
     .object({
       name: z.string().trim().min(1, 'Enter a wallet name.').max(60, 'Use 60 characters or fewer.'),
       categoryId: z.string().min(1, 'Choose a category.'),
-      accentColor: z.string().min(1),
+      accentColor: z.string(),
       noTarget: z.boolean(),
       targetAmount: z.string(),
     })
@@ -59,7 +61,7 @@ export function WalletForm({
     defaultValues: {
       name: wallet?.name ?? '',
       categoryId: wallet?.category?.id ?? wallet?.categoryId ?? '',
-      accentColor: wallet?.accentColor ?? 'green',
+      accentColor: wallet?.accentColor ?? '',
       noTarget: wallet ? !wallet.targetAmount : false,
       targetAmount: wallet?.targetAmount ? minorToInputString(wallet.targetAmount, currency) : '',
     },
@@ -71,7 +73,7 @@ export function WalletForm({
       const body = {
         name: values.name.trim(),
         categoryId: values.categoryId,
-        accentColor: values.accentColor,
+        accentColor: values.accentColor || defaultColor,
         targetAmount: values.noTarget ? null : toMinor(values.targetAmount, currency),
       }
       return wallet ? walletsApi.update(wallet.id, body) : walletsApi.create(body)
@@ -135,24 +137,26 @@ export function WalletForm({
             </span>
             <RadioGroup.Root
               aria-labelledby="accent-label"
-              value={field.value}
+              value={field.value || defaultColor}
               onValueChange={field.onChange}
               orientation="horizontal"
               className="flex flex-wrap gap-2"
             >
-              {ACCENTS.map((accent) => (
+              {colors.data?.map((accent) => (
                 <RadioGroup.Item
                   key={accent.key}
                   value={accent.key}
-                  aria-label={accent.label}
+                  aria-label={accent.key.charAt(0).toUpperCase() + accent.key.slice(1)}
                   className="grid size-10 place-items-center rounded-full border-2 border-transparent data-[state=checked]:border-ink"
                 >
                   <span aria-hidden="true" className="grid size-7 place-items-center rounded-full" style={{ backgroundColor: accent.hex }}>
-                    {field.value === accent.key && <Check className="size-4 text-white" />}
+                    {(field.value || defaultColor) === accent.key && <Check className="size-4 text-white" />}
                   </span>
                 </RadioGroup.Item>
               ))}
             </RadioGroup.Root>
+            {colors.isPending && <p className="text-sm text-muted">Loading colours...</p>}
+            {colors.isError && <p className="text-sm text-danger">We could not load the colours. Refresh the page to try again.</p>}
           </div>
         )}
       />

@@ -3,7 +3,7 @@ import { ChevronRight, Wallet as WalletIcon } from 'lucide-react'
 import { Link } from 'react-router'
 import { ErrorState, ListSkeleton } from '@/components/ui/states'
 import { formatMoney } from '@/lib/money'
-import { accentHex, walletKeys, walletsApi } from '@/features/wallets/api'
+import { walletKeys, walletsApi } from '@/features/wallets/api'
 
 export function WalletsCard({ currency }: { currency: string }) {
   const wallets = useQuery({ queryKey: walletKeys.all, queryFn: walletsApi.list })
@@ -36,7 +36,7 @@ export function WalletsCard({ currency }: { currency: string }) {
       ) : (
         <ul className="flex flex-col gap-2">
           {wallets.data.slice(0, 4).map((w) => {
-            const hex = accentHex(w.accentColor)
+            const hex = w.accentHex
             return (
               <li key={w.id}>
                 <Link

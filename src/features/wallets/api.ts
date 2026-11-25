@@ -17,7 +17,7 @@ export type Wallet = {
   id: string
   name: string
   accentColor: string
-  accentHex?: string
+  accentHex: string
   balance: number
   currency?: string
   targetAmount?: number | null
@@ -40,20 +40,7 @@ export type WalletInput = {
   targetAmount: number | null
 }
 
-export const ACCENTS = [
-  { key: 'green', label: 'Green', hex: '#22A447' },
-  { key: 'orange', label: 'Orange', hex: '#F5582A' },
-  { key: 'purple', label: 'Purple', hex: '#8B3DF5' },
-  { key: 'blue', label: 'Blue', hex: '#4BA3F2' },
-  { key: 'red', label: 'Red', hex: '#E5484D' },
-  { key: 'yellow', label: 'Yellow', hex: '#F5B82A' },
-  { key: 'teal', label: 'Teal', hex: '#14B8A6' },
-  { key: 'pink', label: 'Pink', hex: '#EC4899' },
-] as const
-
-export function accentHex(key: string) {
-  return ACCENTS.find((a) => a.key === key)?.hex ?? '#4BA3F2'
-}
+export type AccentColor = { key: string; hex: string }
 
 export const walletKeys = {
   all: ['wallets'] as const,
@@ -64,9 +51,11 @@ export const walletKeys = {
 }
 
 export const categoryKeys = { all: ['categories'] as const }
+export const accentKeys = { all: ['accent-colors'] as const }
 
 export const walletsApi = {
   categories: () => api<Category[]>('/categories'),
+  accentColors: () => api<AccentColor[]>('/wallets/accent-colors'),
   list: () => api<Wallet[]>('/wallets'),
   get: (id: string) => api<WalletDetail>(`/wallets/${encodeURIComponent(id)}`),
   create: (body: WalletInput) => api<Wallet>('/wallets', { method: 'POST', body }),

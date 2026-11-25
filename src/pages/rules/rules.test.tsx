@@ -43,7 +43,7 @@ function mockRulesPage({ kyc = true, account = 'not_issued', balance = 0 } = {})
     http.get(apiUrl('/split-rules'), () => HttpResponse.json({ data: rules, pagination: { total: 2, page: 1, limit: 10, pages: 1 } })),
     http.get(apiUrl('/split-runs'), () => HttpResponse.json(emptyPage)),
     http.get(apiUrl('/wallets'), () =>
-      HttpResponse.json([{ id: 'w9', name: 'School fees', accentColor: 'green', balance: 0, currency: 'NGN' }]),
+      HttpResponse.json([{ id: 'w9', name: 'School fees', accentColor: 'green', accentHex: '#22A447', balance: 0, currency: 'NGN' }]),
     ),
     http.get(apiUrl('/beneficiaries'), () => HttpResponse.json(emptyPage)),
   )

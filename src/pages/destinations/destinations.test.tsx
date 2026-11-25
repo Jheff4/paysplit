@@ -17,6 +17,7 @@ const wallet: WalletDetail = {
   id: 'w1',
   name: 'Rent',
   accentColor: 'blue',
+  accentHex: '#4BA3F2',
   balance: 5_000_000,
   currency: 'NGN',
   targetAmount: 150_000_000,
@@ -33,6 +34,12 @@ beforeEach(() => {
   server.use(
     http.get(apiUrl('/categories'), () => HttpResponse.json(categories)),
     http.get(apiUrl('/wallets/activity'), () => HttpResponse.json(emptyPage)),
+    http.get(apiUrl('/wallets/accent-colors'), () =>
+      HttpResponse.json([
+        { key: 'green', hex: '#22A447' },
+        { key: 'purple', hex: '#8B3DF5' },
+      ]),
+    ),
   )
 })
 

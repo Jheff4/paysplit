@@ -2,7 +2,7 @@ import { ArrowRight, Wallet as WalletIcon } from 'lucide-react'
 import { Link } from 'react-router'
 import { formatDate } from '@/lib/dates'
 import { formatMoney } from '@/lib/money'
-import { accentHex, type Wallet } from './api'
+import type { Wallet } from './api'
 import { targetPercent } from './target'
 
 export function TargetBar({
@@ -39,7 +39,7 @@ export function TargetBar({
 }
 
 export function WalletCard({ wallet, currency }: { wallet: Wallet; currency: string }) {
-  const hex = accentHex(wallet.accentColor)
+  const hex = wallet.accentHex
   const cur = wallet.currency ?? currency
   return (
     <li className="flex flex-col gap-5 rounded-[20px] p-5" style={{ backgroundColor: `${hex}1a` }}>
