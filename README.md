@@ -11,7 +11,7 @@ PaySplit routes a salary into wallets and transfers automatically, by rules the 
 A new account is unverified, and the API only opens a salary account, accepts split rules and receives money after identity verification. In this sandbox, verification goes through Dojah's test mode, so you can do all of it:
 
 1. **Sign up** with an email you can read (a 6-digit code is sent to it).
-2. **Verify your identity** (Complete KYC): country Nigeria, any phone number (for example `09011111111`), BVN `22222222222` (Dojah's published sandbox test number), then any clear face photo, either from the camera or by uploading it. Tested on 21 Nov 2026 with an account named John Musa, the name in Dojah's sandbox examples. Other names were not tested, and the API checks that the names match.
+2. **Verify your identity** (Complete KYC): country Nigeria, any phone number (for example `09011111111`), BVN `22222222222` (Dojah's published sandbox test number), then any clear face photo, either from the camera or by uploading it. Any name works with this test number, and it can be reused across accounts (checked with two accounts with different names, 21 and 25 Nov 2026). Your salary account opens straight after.
 3. **Set up** from the dashboard prompt or **Setup**: your monthly salary, a wallet, and a split rule. Wallets and the salary details work before verification too.
 4. **Simulate salary payment** (dashboard, under the balance, marked Sandbox): it pre-fills your monthly salary and shows the automatic split it triggers.
 5. **Run Now** on Split Rules splits whatever is left in the salary account.
@@ -84,7 +84,7 @@ src/
 
 ### Accessibility (WCAG 2.2 AA)
 
-- axe runs in the end-to-end suite on every public page, including after a failed submit, at desktop and 360px. All nine signed-in pages (dashboard, destinations, wallet detail, split rules, transactions, settings, notifications, KYC, setup) were scanned with axe in the browser on a real account: 0 violations.
+- axe runs in the end-to-end suite on every public page, including after a failed submit, at desktop and 360px. All nine signed-in pages (dashboard, destinations, wallet detail, split rules, transactions, settings, notifications, KYC, setup) were scanned with axe in the browser on a real account: 0 violations. On 25 Nov 2026 they were scanned again on a verified account with real data, plus the account details, Simulate salary payment and Run Now dialogs and the split and transaction detail pages. That found and fixed two issues that only appear with data (the unread badge's accessible name, and the account number's list markup); all now report 0 violations.
 - Labels on every field, errors linked with `aria-describedby`, focus moved to the page or step heading on navigation, skip link, visible focus, 44px or larger targets, keyboard-only sign-in tested.
 - Dialogs, menus, tabs and switches use Radix for focus trapping and keyboard support. The chart has a screen-reader data table.
 - **Contrast**: the Figma's bright blue with white text (2.63:1) and several greys fail AA. We kept the blue and used colours from the designer's own palette that pass (details in Design deviations).
@@ -100,7 +100,7 @@ src/
 
 ## Testing and evidence
 
-- **103 unit and component tests**: money, dates, allocation maths, and user journeys against a fake API (MSW) that fails on any unexpected request.
+- **112 unit and component tests**: money, dates, allocation maths, and user journeys against a fake API (MSW) that fails on any unexpected request.
 - **14 end-to-end runs**: Playwright plus axe at desktop and 360px.
 - Tests were written first for the money, date and allocation code. Key guards were proven by breaking them on purpose and watching the test fail.
 - **Checked against the real API**: sign-up and email verification, wallet creation (a typed "100,000" was saved as exactly 10,000,000 kobo), and the KYC rule refusal described below.
@@ -144,5 +144,5 @@ The API contract is treated as the source of truth (Project Scope, section 8). W
 ## Known limits
 
 - **Verified live with a throwaway account:** KYC through the app's own screens (Dojah's published sandbox BVN and a generated selfie), salary income, wallets, a fixed and a percentage rule, a simulated salary credit with its automatic split, Run Now, transactions, receipts and notifications. The API types follow those real responses. This caught a crash: transaction categories arrive as objects, not text.
-- **Not observed live:** beneficiary transfers (no sandbox bank account for the name lookup was found), skipped rules and failed transactions. Those are typed from the API docs and rendered defensively.
+- **Not observed live:** beneficiary transfers (no sandbox bank account for the name lookup was found), skipped rules, failed transactions, and adding a BVN or NIN when the salary account asks for one (Settings; this state cannot be produced on the sandbox). Those are built from the API docs and covered by component tests.
 - End-to-end tests cover the public pages. Signed-in journeys are covered by component tests against a fake API, plus manual axe scans.

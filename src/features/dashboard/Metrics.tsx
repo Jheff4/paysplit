@@ -54,12 +54,12 @@ function AccountDetailsDialog({ account, children }: { account: SalaryAccount; c
           </Dialog.Description>
           {details.map((d) => (
             <dl key={d.accountNumber} className="mt-4 flex flex-col gap-3 rounded-xl border border-line p-4">
-              <div className="flex items-center justify-between">
-                <div>
-                  <dt className="text-xs text-muted">Account Number</dt>
-                  <dd className="text-2xl font-medium tracking-wide text-ink">{d.accountNumber}</dd>
-                </div>
-                <CopyButton value={d.accountNumber} label="account number" />
+              <div>
+                <dt className="text-xs text-muted">Account Number</dt>
+                <dd className="flex items-center justify-between gap-2">
+                  <span className="text-2xl font-medium tracking-wide text-ink">{d.accountNumber}</span>
+                  <CopyButton value={d.accountNumber} label="account number" />
+                </dd>
               </div>
               <div>
                 <dt className="text-xs text-muted">Account Name</dt>

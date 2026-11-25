@@ -138,12 +138,12 @@ export function AccountDetails({ profile }: { profile: Profile }) {
     <Panel title="Account Details">
       {account.status === 'active' && number ? (
         <dl className="flex flex-col gap-3 text-sm">
-          <div className="flex items-start justify-between">
-            <div>
-              <dt className="text-muted">Account Number:</dt>
-              <dd className="text-3xl font-medium tracking-wide text-ink sm:text-4xl">{number}</dd>
-            </div>
-            <CopyInline value={number} label="account number" />
+          <div>
+            <dt className="text-muted">Account Number:</dt>
+            <dd className="flex items-start justify-between gap-2">
+              <span className="text-3xl font-medium tracking-wide text-ink sm:text-4xl">{number}</span>
+              <CopyInline value={number} label="account number" />
+            </dd>
           </div>
           <div>
             <dt className="text-muted">Account Name:</dt>

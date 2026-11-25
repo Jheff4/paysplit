@@ -107,12 +107,9 @@ function NotificationsLink() {
   const badge = useQuery({ queryKey: notificationKeys.badge, queryFn: notificationsApi.badge, refetchInterval: 60_000 })
   const unread = typeof badge.data?.unreadCount === 'number' ? badge.data.unreadCount : 0
   return (
-    <Link
-      to="/notifications"
-      aria-label={unread ? `Notifications, ${unread} unread` : 'Notifications'}
-      className={cn(iconButtonClass, 'relative')}
-    >
+    <Link to="/notifications" className={cn(iconButtonClass, 'relative')}>
       <Bell aria-hidden="true" className="size-5" />
+      <span className="sr-only">{unread ? `Notifications, ${unread} unread` : 'Notifications'}</span>
       {unread > 0 && (
         <span
           aria-hidden="true"
